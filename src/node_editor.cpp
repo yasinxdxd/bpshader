@@ -339,48 +339,41 @@ void node_editor::Editor::show_editor()
             ImNodes::IsEditorHovered() && ImGui::IsKeyReleased(ImGuiKey_D))
             {
                 // FIXME: do not allow user to delete more than one node.
-                //for(size_t i = 0; selected_node_ids[0] != -1; i++)
-                if( selected_node_ids[0] != -1)
+                if (selected_node_ids[0] != -1)
                 {
-                    //Node* node_to_delete = get_node_by_id(selected_node_ids[0]);
-                    //if(node_to_delete != nullptr)
+                    size_t node_index = get_node_index_by_id(selected_node_ids[0]);
+
+                    // first delete links
+                    for (const Link& link : this->links)
                     {
-                        /*
-                        std::cout << global_map_func(selected_node_ids[0], 0, this->current_id, 0, this->nodes.size()) << std::endl;
-                        auto node_index = my_round(
-                        global_map_func(selected_node_ids[0], 0, this->current_id, 0, this->nodes.size())
-                        * my_round((node_to_delete->id - node_to_delete->last_id) / NODE_MAX_ATTRIBUTE)
-                        );
-                        std::cout <<"map( "<< selected_node_ids[0] << ", "
-                        << 0 << ", "
-                        << this->current_id << ", "
-                        << 0 << ", "
-                        << this->nodes.size() << ") = "
-                        << node_index << "\n";
-                        
-                        */
-                        size_t node_index = get_node_index_by_id(selected_node_ids[0]);
-                        for(size_t j = node_index + 1; j < this->nodes.size(); j++)
+                        if ((link.end_attr > this->nodes[node_index]->id &&
+                            link.end_attr < this->nodes[node_index]->last_id)
+                            ||
+                            (link.start_attr > this->nodes[node_index]->id &&
+                            link.start_attr < this->nodes[node_index]->last_id)
+                        )
                         {
-                            auto pos = ImNodes::GetNodeEditorSpacePos(this->nodes.at(j)->id);
-                            this->nodes.at(j)->id -= (this->nodes.at(node_index)->last_id - this->nodes.at(node_index)->id);
-                            ImNodes::SetNodeEditorSpacePos(this->nodes.at(j)->id, pos);
+                            size_t link_index = get_link_index_by_id(link.id);
+                            
+                            this->links.erase(this->links.begin() + link_index);
                         }
-                        
-                        this->nodes.erase(this->nodes.begin() + node_index);
-
-                                                                    //i                    
-                        ImNodes::ClearNodeSelection(selected_node_ids[0]);
                     }
-                    
 
-                    // FIXME: also fix the linkages after deletions.(delete linkages)
+
+                    for(size_t j = node_index + 1; j < this->nodes.size(); j++)
+                    {
+                        auto pos = ImNodes::GetNodeEditorSpacePos(this->nodes.at(j)->id);
+                        this->nodes.at(j)->id -= (this->nodes.at(node_index)->last_id - this->nodes.at(node_index)->id);
+                        ImNodes::SetNodeEditorSpacePos(this->nodes.at(j)->id, pos);
+                    }
+
+                    this->nodes.erase(this->nodes.begin() + node_index);
+                                                                //i
+                    ImNodes::ClearNodeSelection(selected_node_ids[0]);
                 }
 
                 memset(selected_node_ids, -1, 64*sizeof(int));
             }
-            
-
     }
 
     int _last_id = 0;
@@ -481,6 +474,17 @@ size_t node_editor::Editor::get_node_index_by_id(uint64_t id) const
     for(size_t i = 0; i < this->nodes.size(); i++)
     {
         if(this->nodes.at(i)->id == id)
+            return i;
+    }
+
+    return -1;
+}
+
+size_t node_editor::Editor::get_link_index_by_id(uint64_t id) const
+{
+    for(size_t i = 0; i < this->links.size(); i++)
+    {
+        if(this->links.at(i).id == id)
             return i;
     }
 

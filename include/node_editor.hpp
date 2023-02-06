@@ -109,6 +109,7 @@ namespace node_editor
         void show_editor();
         Node* get_node_by_id(uint64_t id) const;
         size_t get_node_index_by_id(uint64_t id) const;
+        size_t get_link_index_by_id(uint64_t id) const;
         void initialize(const char* editor_name);
         void shutdown();
         void save();
