@@ -59,8 +59,8 @@ _NORETURN_ void Texture2D::generate_texture()
         break;
     }
     
-    //glGenerateMipmap(GL_TEXTURE_2D);
-    //glBindTexture(GL_TEXTURE_2D, 0);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Texture2D::bind()

@@ -86,6 +86,8 @@ Shader2D::operator unsigned int()
     return m_gl_shader2d_program_id;
 }
 
+// FIXME: FIX the multi dimensional set methods with a better structure!!!
+
 template <>
 _NORETURN_ void Shader2D::set<int>(std::string name, int value) const
 {
