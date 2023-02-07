@@ -375,7 +375,14 @@ int node_editor::ConditionNode::show()
     return this->last_id;
 }
 
-#include <iostream>
+node_editor::SinFunctionNode::SinFunctionNode(const int i) : Node(i, Node::NodeType::ConditionNode)
+{
+}
+
+int node_editor::SinFunctionNode::show()
+{
+    return 0;
+}
 
 void node_editor::Editor::show_editor()
 {
@@ -390,8 +397,6 @@ void node_editor::Editor::show_editor()
 
 
     ImNodes::BeginNodeEditor();
-
-    ImNodes::MiniMap(0.2f, ImNodesMiniMapLocation_TopRight);
     
     //TODO: add a right click menu on the node editor...
     //TODO: add a right click menu on the node editor...
@@ -443,19 +448,25 @@ void node_editor::Editor::show_editor()
                     size_t node_index = get_node_index_by_id(selected_node_ids[0]);
 
                     // first delete links
-                    for (const Link& link : this->links)
+                    //for (Link& link : this->links)
+                    for (size_t i = 0; i < this->links.size();)
                     {
-                        if ((link.end_attr > this->nodes[node_index]->id &&
-                            link.end_attr < this->nodes[node_index]->last_id)
+                        bool _check = false;
+                        if ((links[i].end_attr > this->nodes[node_index]->id &&
+                            links[i].end_attr < this->nodes[node_index]->last_id)
                             ||
-                            (link.start_attr > this->nodes[node_index]->id &&
-                            link.start_attr < this->nodes[node_index]->last_id)
+                            (links[i].start_attr > this->nodes[node_index]->id &&
+                            links[i].start_attr < this->nodes[node_index]->last_id)
                         )
                         {
-                            size_t link_index = get_link_index_by_id(link.id);
+                            size_t link_index = get_link_index_by_id(links[i].id);
                             
                             this->links.erase(this->links.begin() + link_index);
+                            i = 0;
+                            _check = true;
                         }
+                        if(_check == false)
+                            i++;
                     }
 
 
@@ -488,10 +499,11 @@ void node_editor::Editor::show_editor()
         //printf_s("link data: %d, %d, %d", link.id, link.start_attr, link.end_attr);
         ImNodes::Link(link.id, link.start_attr, link.end_attr);
         Node *nb = nullptr, *ne = nullptr;
-
+        /*
         std::cout << link.id << std::endl;
         std::cout << "start : " << link.start_attr << std::endl;
         std::cout << "end   : " << link.end_attr << std::endl;
+        */
 
         for(const auto& node : nodes)
         {
@@ -513,11 +525,11 @@ void node_editor::Editor::show_editor()
             auto ne_in_index = global_map_func(link.end_attr, ne->id, ne->last_id, 0, ne_in_size);
             auto nb_out_index = global_map_func(link.start_attr, nb->id, nb->last_id, 0, nb_out_size);
 
+            /*
             printf("in_index  : %d\n", ne_in_index);
             printf("out_index : %d\n", nb_out_index);
             printf("nb: %d\n", nb->id);
             printf("ne: %d\n", ne->id);
-            /*
             */
             ne->inputs[ne_in_index] = nb->outputs[nb_out_index];           
         }
@@ -525,6 +537,10 @@ void node_editor::Editor::show_editor()
         //TODO: add possibilities for float node or find a better way to implement linkages between Nodes...
     
     }
+
+
+    // ImNodes readme.md says that it must be called right before EndNodeEditor
+    ImNodes::MiniMap(0.2f, ImNodesMiniMapLocation_TopRight);
 
     ImNodes::EndNodeEditor();
 
