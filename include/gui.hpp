@@ -22,7 +22,7 @@ static inline void InitIO()
     ImFontConfig config;
     config.MergeMode = true;
     pfont_aldrich = io.Fonts->AddFontFromFileTTF("Aldrich-Regular.ttf", 16.0f);
-    pfont_ubuntu = io.Fonts->AddFontFromFileTTF("Ubuntu-Title.ttf", 24.0f);//, &config, io.Fonts->GetGlyphRangesChineseFull()
+    pfont_ubuntu = io.Fonts->AddFontFromFileTTF("Ubuntu-Title.ttf", 18.0f);//, &config, io.Fonts->GetGlyphRangesChineseFull()
 }
 
 #define _MY_IM_COLOR1 ImVec4(0.74f, 0.83f, 0.62f, 1.00f)

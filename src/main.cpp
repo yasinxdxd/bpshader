@@ -49,7 +49,7 @@ ImGui::End();
         window.pollEvent();
 
         uint8_t ms = (uint8_t)duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-        std::cout << ms / 256.0 << std::endl;
+        //std::cout << ms / 256.0 << std::endl;
         screen_shader->set<float>("time", ms / 256.0);
 
         //glViewport(200, 0, 800, 600);
