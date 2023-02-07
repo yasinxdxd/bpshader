@@ -6,6 +6,7 @@
 #include <ini.h>
 #include <texture2d.hpp>
 #include <shader2d.hpp>
+#include <iostream>
 
 #define IM_VEC2_CLASS_EXTRA \
 ImVec2 ImVec2::operator+(ImVec2 right)\
@@ -38,7 +39,6 @@ int my_round(float num)
  */
 #define NODE_MAX_ATTRIBUTE 6.0
 
-
 extern glcompiler::_priv::_compiler_info compiler_info;
 
 node_editor::MultiplyNode::MultiplyNode(const int i) : Node(i, Node::NodeType::MultiplyNode)
@@ -53,20 +53,22 @@ int node_editor::MultiplyNode::show()
     ImNodes::BeginNode(this->id);
 
     ImNodes::BeginNodeTitleBar();
-    ImGui::Text("Multiply (%d)", this->id);
+    ImGui::Text("Multiply");
     ImNodes::EndNodeTitleBar();
     
     uint8_t i = 0;
     for(; i < this->inputs.size(); i++)
     {
         ImNodes::BeginInputAttribute(++this->id);
-        ImGui::Text("in (%d)", this->id);
+        ImGui::Text("in");
         ImNodes::EndInputAttribute();
+
+        ImGui::SameLine();
 
         ImNodes::BeginStaticAttribute(++this->id);
         ImGui::PushItemWidth(120.0f);
-        ImGui::Text("(%d)", this->id);
-        ImGui::DragFloat("value", &this->inputs[i], 0.1f);
+        //ImGui::Text("(%d)", this->id);
+        ImGui::DragFloat("##value", &this->inputs[i], 0.1f);
         ImGui::PopItemWidth();
         ImNodes::EndStaticAttribute();
     }
@@ -83,9 +85,9 @@ int node_editor::MultiplyNode::show()
     {
         ImNodes::BeginOutputAttribute(++this->id);
         const float text_width = ImGui::CalcTextSize("out").x;
-        ImGui::Indent(120.f + ImGui::CalcTextSize("value").x - text_width);
+        ImGui::Indent(120.f + ImGui::CalcTextSize("##value").x - text_width);
         //this->outputs[j].second = this->id  + 2 + j + i;
-        ImGui::Text("out (%d)", this->id);
+        ImGui::Text("out");
         ImNodes::EndOutputAttribute();
     }
     
@@ -109,7 +111,7 @@ int node_editor::AdditionNode::show()
     ImNodes::BeginNode(this->id);
 
     ImNodes::BeginNodeTitleBar();
-    ImGui::Text("Addition (%d)", this->id);
+    ImGui::Text("Addition");
     ImNodes::EndNodeTitleBar();
     
     uint8_t i = 0;
@@ -117,14 +119,16 @@ int node_editor::AdditionNode::show()
     {
         ImNodes::BeginInputAttribute(++this->id);
         //ImGui::TextUnformatted("in");
-        ImGui::Text("in (%d)", this->id);
+        ImGui::Text("in");
         //this->inputs[i].second = this->id + 1 + i;
         ImNodes::EndInputAttribute();
 
+        ImGui::SameLine();
+
         ImNodes::BeginStaticAttribute(++this->id);
         ImGui::PushItemWidth(120.0f);
-        ImGui::Text("(%d)", this->id);
-        ImGui::DragFloat("value", &this->inputs[i], 0.1f);
+        //ImGui::Text("(%d)", this->id);
+        ImGui::DragFloat("##value", &this->inputs[i], 0.1f);
         ImGui::PopItemWidth();
         ImNodes::EndStaticAttribute();
     }
@@ -141,9 +145,9 @@ int node_editor::AdditionNode::show()
     {
         ImNodes::BeginOutputAttribute(++this->id);
         const float text_width = ImGui::CalcTextSize("out").x;
-        ImGui::Indent(120.f + ImGui::CalcTextSize("value").x - text_width);
+        ImGui::Indent(120.f + ImGui::CalcTextSize("##value").x - text_width);
         //this->outputs[j].second = this->id  + 2 + j + i;
-        ImGui::Text("out (%d)", this->id);
+        ImGui::Text("out");
         ImNodes::EndOutputAttribute();
     }
     
@@ -168,19 +172,21 @@ int node_editor::FloatNode::show()
     ImNodes::BeginNode(this->id);
 
     ImNodes::BeginNodeTitleBar();
-    ImGui::Text("Float1 (%d)", this->id);
+    ImGui::Text("Float1");
     ImNodes::EndNodeTitleBar();
 
     uint8_t i = 0;
     for(; i < this->inputs.size(); i++)
     {
         ImNodes::BeginInputAttribute(++this->id);
-        ImGui::Text("in (%d)", this->id);
+        ImGui::Text("in");
         ImNodes::EndInputAttribute();
+
+        ImGui::SameLine();
 
         ImNodes::BeginStaticAttribute(++this->id);
         ImGui::PushItemWidth(120.0f);
-        ImGui::DragFloat("value", &this->inputs[i], 0.1f);
+        ImGui::DragFloat("##value", &this->inputs[i], 0.1f);
         ImGui::PopItemWidth();
         ImNodes::EndStaticAttribute();
     }
@@ -192,8 +198,8 @@ int node_editor::FloatNode::show()
     {
         ImNodes::BeginOutputAttribute(++this->id);
         const float text_width = ImGui::CalcTextSize("out").x;
-        ImGui::Indent(120.f + ImGui::CalcTextSize("value").x - text_width);
-        ImGui::Text("out (%d)", this->id);
+        ImGui::Indent(120.f + ImGui::CalcTextSize("##value").x - text_width);
+        ImGui::Text("out");
         ImNodes::EndOutputAttribute();
     }
     /*
@@ -213,15 +219,23 @@ int node_editor::FloatNode::show()
 
 node_editor::BoolNode::BoolNode(const int i) : Node(i, Node::NodeType::BoolNode)
 {
-    this->inputs.resize(0);
+    this->inputs.resize(1);
     this->outputs.resize(1);
 }
 
 int node_editor::BoolNode::show()
 {
     const int tmp_id = this->id;
+
     ImNodes::BeginNode(this->id);
+
+    ImNodes::BeginNodeTitleBar();
+    ImGui::Text("Bool");
+    ImNodes::EndNodeTitleBar();
+
+
     ImNodes::EndNode();
+
     this->last_id = ++this->id;
     this->id = tmp_id;
     return this->last_id;
@@ -237,9 +251,9 @@ int node_editor::TimeNode::show()
 {
     const int tmp_id = this->id;
     ImNodes::BeginNode(this->id);
-
+    
     ImNodes::BeginNodeTitleBar();
-    ImGui::Text("Time (%d)", this->id);
+    ImGui::Text("Time");
     ImNodes::EndNodeTitleBar();
 
     //Shader2D s;
@@ -251,8 +265,8 @@ int node_editor::TimeNode::show()
     {
         ImNodes::BeginOutputAttribute(++this->id);
         const float text_width = ImGui::CalcTextSize("out").x;
-        ImGui::Indent(120.f + ImGui::CalcTextSize("value").x - text_width);
-        ImGui::Text("out (%d)", this->id);
+        ImGui::Indent(120.f + ImGui::CalcTextSize("##value").x - text_width);
+        ImGui::Text("out");
         ImNodes::EndOutputAttribute();
     }
 
@@ -271,8 +285,91 @@ node_editor::ConditionNode::ConditionNode(const int i) : Node(i, Node::NodeType:
 int node_editor::ConditionNode::show()
 {
     const int tmp_id = this->id;
+
     ImNodes::BeginNode(this->id);
+
+    ImNodes::BeginNodeTitleBar();
+    ImGui::Text("Condition");
+    ImNodes::EndNodeTitleBar();
+
+    ImNodes::BeginInputAttribute(++this->id);
+    //ImGui::TextUnformatted("in");
+    ImGui::Text("in");
+    //this->inputs[i].second = this->id + 1 + i;
+    ImNodes::EndInputAttribute();
+    
+    ImGui::SameLine();
+
+    ImNodes::BeginStaticAttribute(++this->id);
+    ImGui::PushItemWidth(120.0f);
+    //ImGui::Text("(%d)", this->id);
+    ImGui::DragFloat("##value", &this->inputs[0], 0.1f);
+    ImGui::PopItemWidth();
+    ImNodes::EndStaticAttribute();
+
+    ImNodes::BeginStaticAttribute(++this->id);
+    ImGui::PushItemWidth(120.0f);
+    ////ImGui::Text("(%d)", this->id);
+    
+
+    float w = ImGui::CalcItemWidth();
+    float spacing = 2;//style.ItemInnerSpacing.x;
+    float button_sz = ImGui::GetFrameHeight();
+    ImGui::PushItemWidth(w - spacing * 2.0f - button_sz * 2.0f);
+    if (ImGui::BeginCombo("##custom combo", current_item, ImGuiComboFlags_NoArrowButton))
+    {
+        ImGui::EndCombo();
+    }
+    ImGui::PopItemWidth();
+    ImGui::SameLine(0, spacing);
+    if (ImGui::ArrowButton("##l", ImGuiDir_Left))
+    {
+        item_index--;
+        current_item = items[item_index % IM_ARRAYSIZE(items)];
+    }
+    ImGui::SameLine(0, spacing);
+    if (ImGui::ArrowButton("##r", ImGuiDir_Right))
+    {
+        item_index++;
+        current_item = items[item_index % IM_ARRAYSIZE(items)];
+    }
+
+    ImGui::PopItemWidth();
+    ImNodes::EndStaticAttribute();
+
+
+    ImNodes::BeginInputAttribute(++this->id);
+    //ImGui::TextUnformatted("in");
+    ImGui::Text("in");
+    //this->inputs[i].second = this->id + 1 + i;
+    ImNodes::EndInputAttribute();
+
+    ImGui::SameLine();
+
+    ImNodes::BeginStaticAttribute(++this->id);
+    ImGui::PushItemWidth(120.0f);
+    //ImGui::Text("(%d)", this->id);
+    ImGui::DragFloat("##value", &this->inputs[1], 0.1f);
+    ImGui::PopItemWidth();
+    ImNodes::EndStaticAttribute();
+
+    
+
+    uint8_t j = 0;
+    for(; j < this->outputs.size(); j++)
+    {
+        ImNodes::BeginOutputAttribute(++this->id);
+        const float text_width = ImGui::CalcTextSize("out").x;
+        ImGui::Indent(120.f + ImGui::CalcTextSize("##value").x - text_width);
+        //this->outputs[j].second = this->id  + 2 + j + i;
+        ImGui::Text("out");
+        ImNodes::EndOutputAttribute();
+    }
+
+
+
     ImNodes::EndNode();
+    
     this->last_id = ++this->id;
     this->id = tmp_id;
     return this->last_id;
@@ -293,6 +390,8 @@ void node_editor::Editor::show_editor()
 
 
     ImNodes::BeginNodeEditor();
+
+    ImNodes::MiniMap(0.2f, ImNodesMiniMapLocation_TopRight);
     
     //TODO: add a right click menu on the node editor...
     //TODO: add a right click menu on the node editor...
@@ -389,8 +488,6 @@ void node_editor::Editor::show_editor()
         //printf_s("link data: %d, %d, %d", link.id, link.start_attr, link.end_attr);
         ImNodes::Link(link.id, link.start_attr, link.end_attr);
         Node *nb = nullptr, *ne = nullptr;
-        
-        //FIXME: set second as the index of the input/output pin??
 
         std::cout << link.id << std::endl;
         std::cout << "start : " << link.start_attr << std::endl;

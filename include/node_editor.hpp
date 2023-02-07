@@ -73,6 +73,7 @@ namespace node_editor
         virtual int show() override;
     };
 
+    // TODO: implement the time uniform value from the shader to TimeNode itself to be shown
     struct TimeNode : public NODE_BUILTIN
     {
         TimeNode(const int i);
@@ -83,6 +84,10 @@ namespace node_editor
     struct ConditionNode : public NODE_OPERATOR
     {
         ConditionNode(const int i);
+
+        static inline const char* items[6] = {"    ==", "    !=", "     <", "     >", "    <=", "    >="};
+        uint8_t item_index = 0;
+        const char* current_item = items[item_index];
         
         virtual int show() override;
     };
