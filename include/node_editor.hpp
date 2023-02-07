@@ -28,6 +28,7 @@ namespace node_editor
             BoolNode,
             TimeNode,
             ConditionNode,
+            SinFunctionNode,
             NodeType_COUNT
         };
 
@@ -73,6 +74,28 @@ namespace node_editor
         virtual int show() override;
     };
 
+    // TODO: implement these variable nodes...
+    struct Vec2Node : public NODE_VARIABLE
+    {
+        Vec2Node(const int i);
+
+        virtual int show() override;
+    };
+
+    struct Vec3Node : public NODE_VARIABLE
+    {
+        Vec3Node(const int i);
+
+        virtual int show() override;
+    };
+
+    struct Vec4Node : public NODE_VARIABLE
+    {
+        Vec4Node(const int i);
+
+        virtual int show() override;
+    };
+
     // TODO: implement the time uniform value from the shader to TimeNode itself to be shown
     struct TimeNode : public NODE_BUILTIN
     {
@@ -91,6 +114,20 @@ namespace node_editor
         
         virtual int show() override;
     };
+
+    struct SinFunctionNode : public NODE_BUILTIN
+    {
+        SinFunctionNode(const int i);
+
+        virtual int show() override;
+    };
+
+    struct CustomFunctionNode : public NODE_BUILTIN
+    {
+        // TODO: allow user to create custom functions via this node...
+        // TODO: allow user to write glsl code in to it...
+    };
+    
 
     struct Link
     {
@@ -124,7 +161,7 @@ namespace node_editor
     struct EditorManager
     {
         static inline const char* const items[Node::NodeType::NodeType_COUNT] = {
-            "Multiply", "Add", "Float1", "Bool", "Time", "Condition"
+            "Multiply", "Add", "Float1", "Bool", "Time", "Condition", "SinFunctionNode"
         };
         static inline int item_current_idx = 0; // Here we store our selection data as an index.
         static void show_node_list();
