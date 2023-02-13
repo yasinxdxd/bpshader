@@ -119,6 +119,10 @@ namespace node_editor
     {
         SinFunctionNode(const int i);
 
+        static inline const char* items[2] = {"radian", "degree"};
+        uint8_t item_index = 0;
+        const char* current_item = items[item_index];
+
         virtual int show() override;
     };
 

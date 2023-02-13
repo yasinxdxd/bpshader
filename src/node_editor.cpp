@@ -7,6 +7,7 @@
 #include <texture2d.hpp>
 #include <shader2d.hpp>
 #include <iostream>
+#include <defs.hh>
 
 #define IM_VEC2_CLASS_EXTRA \
 ImVec2 ImVec2::operator+(ImVec2 right)\
@@ -307,10 +308,8 @@ int node_editor::ConditionNode::show()
     ImGui::PopItemWidth();
     ImNodes::EndStaticAttribute();
 
-    ImNodes::BeginStaticAttribute(++this->id);
+    ImNodes::BeginStaticAttribute(++this->id);    
     ImGui::PushItemWidth(120.0f);
-    ////ImGui::Text("(%d)", this->id);
-    
 
     float w = ImGui::CalcItemWidth();
     float spacing = 2;//style.ItemInnerSpacing.x;
@@ -377,11 +376,86 @@ int node_editor::ConditionNode::show()
 
 node_editor::SinFunctionNode::SinFunctionNode(const int i) : Node(i, Node::NodeType::ConditionNode)
 {
+    this->inputs.resize(1);
+    this->outputs.resize(1);
 }
 
 int node_editor::SinFunctionNode::show()
 {
-    return 0;
+    const int tmp_id = this->id;
+    ImNodes::BeginNode(this->id);
+
+    ImNodes::BeginNodeTitleBar();
+    ImGui::Text("Sin");
+    ImNodes::EndNodeTitleBar();
+
+    uint8_t i = 0;
+    for(; i < this->inputs.size(); i++)
+    {
+        ImNodes::BeginInputAttribute(++this->id);
+        ImGui::Text("in");
+        ImNodes::EndInputAttribute();
+
+        ImGui::SameLine();
+
+        ImNodes::BeginStaticAttribute(++this->id);
+        ImGui::PushItemWidth(120.0f);
+        ImGui::DragFloat("##value", &this->inputs[i], 0.1f);
+        ImGui::PopItemWidth();
+        ImNodes::EndStaticAttribute();
+    }
+
+
+    ImNodes::BeginStaticAttribute(++this->id);    
+    ImGui::PushItemWidth(120.0f);
+
+    float w = ImGui::CalcItemWidth();
+    float spacing = 2;//style.ItemInnerSpacing.x;
+    float button_sz = ImGui::GetFrameHeight();
+    ImGui::PushItemWidth(w - spacing * 2.0f - button_sz * 2.0f);
+    if (ImGui::BeginCombo("##custom combo", current_item, ImGuiComboFlags_NoArrowButton))
+    {
+        ImGui::EndCombo();
+    }
+    ImGui::PopItemWidth();
+    ImGui::SameLine(0, spacing);
+    if (ImGui::ArrowButton("##l", ImGuiDir_Left))
+    {
+        item_index--;
+        current_item = items[item_index % IM_ARRAYSIZE(items)];
+    }
+    ImGui::SameLine(0, spacing);
+    if (ImGui::ArrowButton("##r", ImGuiDir_Right))
+    {
+        item_index++;
+        current_item = items[item_index % IM_ARRAYSIZE(items)];
+    }
+
+    ImGui::PopItemWidth();
+    ImNodes::EndStaticAttribute();
+
+
+    if(item_index % IM_ARRAYSIZE(items) == 0) // radian
+        this->outputs[0] = sinf(this->inputs[0]);
+    else                                      // degree
+        this->outputs[0] = sinf(DEG2RAD(this->inputs[0]));
+
+
+    uint8_t j = 0;
+    for(; j < this->outputs.size(); j++)
+    {
+        ImNodes::BeginOutputAttribute(++this->id);
+        const float text_width = ImGui::CalcTextSize("out").x;
+        ImGui::Indent(120.f + ImGui::CalcTextSize("##value").x - text_width);
+        ImGui::Text("out");
+        ImNodes::EndOutputAttribute();
+    }
+    
+    ImNodes::EndNode();
+
+    this->last_id = ++this->id;
+    this->id = tmp_id;
+    return this->last_id;
 }
 
 void node_editor::Editor::show_editor()
@@ -428,6 +502,9 @@ void node_editor::Editor::show_editor()
             break;
         case node_editor::Node::NodeType::ConditionNode:
             this->nodes.push_back(new ConditionNode(node_id));
+            break;
+        case node_editor::Node::NodeType::SinFunctionNode :
+            this->nodes.push_back(new SinFunctionNode(node_id));
             break;
 
         default:
@@ -815,8 +892,8 @@ void node_editor::EditorManager::show_shader_screen(Editor& editor, Texture2D*& 
 void node_editor::EditorManager::show_shortcuts()
 {
     ImGui::BeginChild("Shortcuts", ImVec2{300, 300},true);
-    ImGui::TextColored(ImVec4(1, 0.81, 0.52, 1), "Press \'A\' to add new node.");
-    ImGui::TextColored(ImVec4(1, 0.81, 0.52, 1), "Press \'D\' to delete selected node.");
+    ImGui::TextColored(ImVec4(1.f, 0.81f, 0.52f, 1.f), "Press \'A\' to add new node.");
+    ImGui::TextColored(ImVec4(1.f, 0.81f, 0.52f, 1.f), "Press \'D\' to delete selected node.");
     ImGui::EndChild();
 }
 
