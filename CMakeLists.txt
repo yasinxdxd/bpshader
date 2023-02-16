@@ -11,6 +11,7 @@ include_directories(
     ${EXTERN_DIR}/glad/include
     ${EXTERN_DIR}/glfw/include
     ${EXTERN_DIR}/imgui/include
+    ${EXTERN_DIR}/imguifiledialog/include
     ${EXTERN_DIR}/stb_image
     ${EXTERN_DIR}/mini
                     "include")
@@ -48,7 +49,8 @@ link_directories(
 
 file(GLOB SOURCES "src/*.cpp" "src/*.c" "src/*.cc"
 ${EXTERN_DIR}/glad/src/glad.c
-${EXTERN_DIR}/imgui/src/*.cpp)
+${EXTERN_DIR}/imgui/src/*.cpp
+${EXTERN_DIR}/imguifiledialog/src/*.cpp)
 
 
 

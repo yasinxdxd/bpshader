@@ -2,6 +2,7 @@
 #define NODE_EDITOR_HPP
 
 #include <vector>
+#include <string>
 
 struct ImNodesEditorContext;
 class Texture2D;
@@ -35,6 +36,7 @@ namespace node_editor
         NodeType type;
         int id;
         int last_id;
+        // FIXME: input types are only C float. It should be improved and should allowed to get input as vector and matrix types.
         std::vector<_InputType> inputs;
         std::vector<_OutputType> outputs;
 
@@ -149,6 +151,7 @@ namespace node_editor
         int                   current_link_id = 0;
 
         int selected_node_ids[64];
+        bool right_click_menu = false;
 
         //...
 
@@ -168,6 +171,7 @@ namespace node_editor
             "Multiply", "Add", "Float1", "Bool", "Time", "Condition", "SinFunctionNode"
         };
         static inline int item_current_idx = 0; // Here we store our selection data as an index.
+        static inline std::string file_path_name = "../../shaders/notexture_frag.glsl";
         static void show_node_list();
         static void show_shader_screen(Editor& editor, Texture2D*& texture, Shader2D*& shader);
         static void show_shortcuts();

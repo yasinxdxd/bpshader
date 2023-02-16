@@ -32,6 +32,8 @@ int my_round(float num)
 
 #include <imgui.h>
 #include <imnodes.h>
+#include <imgui_internal.h>
+#include <ImGuiFileDialog.h>
 
 /*
     NODE_MAX_ATTRIBUTE içerisinde en fazla attribute barındıran node'un attribute sayısını belirler,
@@ -473,11 +475,15 @@ void node_editor::Editor::show_editor()
     ImNodes::BeginNodeEditor();
     
     //TODO: add a right click menu on the node editor...
+    if (ImGui::GetIO().MouseClicked[1])
+    {
+        right_click_menu = true;
+    }
     //TODO: add a right click menu on the node editor...
     //TODO: add a right click menu on the node editor...
 
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
-        ImNodes::IsEditorHovered() && ImGui::IsKeyReleased(ImGuiKey_A))
+        ImNodes::IsEditorHovered() && (ImGui::IsKeyReleased(ImGuiKey_A)))
     {
         const int node_id = current_id;
         ImNodes::SetNodeScreenSpacePos(node_id, ImGui::GetMousePos());
@@ -517,15 +523,16 @@ void node_editor::Editor::show_editor()
         ImNodes::GetSelectedNodes(selected_node_ids);
 
         if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
-            ImNodes::IsEditorHovered() && ImGui::IsKeyReleased(ImGuiKey_D))
+            ImNodes::IsEditorHovered() && (ImGui::IsKeyReleased(ImGuiKey_D)))
+        {
+            // FIXME: do allow user to delete more than one node.
+            // FIXME: when any node is selected then selection is canceled, and if try to delete node it crashes!
+            if (selected_node_ids[0] != -1)
             {
-                // FIXME: do not allow user to delete more than one node.
-                if (selected_node_ids[0] != -1)
+                int node_index = get_node_index_by_id(selected_node_ids[0]);
+                if (node_index != -1)
                 {
-                    size_t node_index = get_node_index_by_id(selected_node_ids[0]);
-
                     // first delete links
-                    //for (Link& link : this->links)
                     for (size_t i = 0; i < this->links.size();)
                     {
                         bool _check = false;
@@ -558,9 +565,9 @@ void node_editor::Editor::show_editor()
                                                                 //i
                     ImNodes::ClearNodeSelection(selected_node_ids[0]);
                 }
-
-                memset(selected_node_ids, -1, 64*sizeof(int));
             }
+            memset(selected_node_ids, -1, 64*sizeof(int));
+        }
     }
 
     int _last_id = 0;
@@ -717,123 +724,17 @@ void node_editor::Editor::save()
 
     // Dump our editor state as bytes into a file
     // FIXME:
-    std::fstream fout(
-        "save_load.bytes", std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
-
-    const size_t num_nodes = this->nodes.size();
-    const size_t num_links = this->links.size();
-    fout.write(
-        reinterpret_cast<const char*>(&num_nodes),
-        static_cast<std::streamsize>(sizeof(size_t)));
-    fout.write(
-        reinterpret_cast<const char*>(&num_links),
-        static_cast<std::streamsize>(sizeof(size_t)));
     
-    // FIXME:
-    /*
-    for(size_t i = 0; i < num_nodes; i++)
-    {
-        fout.write(reinterpret_cast<const char*>(&this->nodes.at(0)->id), static_cast<std::streamsize>(sizeof(int)));
-    }
-
-    // FIXME:
-    fout.write(
-        reinterpret_cast<const char*>(this->links.data()),
-        static_cast<std::streamsize>(sizeof(Link) * num_links));
-
-        printf_s("sizeof(Node): %zd\n", sizeof(Node));
-        printf_s("sizeof(Link): %zd\n", sizeof(Link));
-    */
-
-    //fout.write(reinterpret_cast<const char*>(&this->current_id), static_cast<std::streamsize>(sizeof(int)));
 }
 
 void node_editor::Editor::load()
 {
-    // Load the internal imnodes state
-    // FIXME:
-    /*
-    mINI::INIFile ini_file("save_load.ini");
-    mINI::INIStructure ini;
-    ini_file.read(ini);
-    */
-    // FIXME:
-    // FIXME:
-    // FIXME:
-    // Load our editor state into memory
 
-    std::fstream fin("save_load.bytes", std::ios_base::in | std::ios_base::binary);
-
-    if (!fin.is_open())
-    {
-        return;
-    }
-
-    try
-    {
-        size_t num_nodes;
-        size_t num_links;
-        fin.read(reinterpret_cast<char*>(&num_nodes), static_cast<std::streamsize>(sizeof(size_t)));
-        fin.read(reinterpret_cast<char*>(&num_links), static_cast<std::streamsize>(sizeof(size_t)));
-        
-        // FIXME:
-        for(static size_t i = 0; i < num_nodes; i++)
-        {
-            //const int node_id = get_id();
-            /*
-            std::string spos = ini["node." + std::to_string(node_id)]["origin"];
-            
-            std::stringstream ss(spos);  
-            std::string nums;
-            
-            int iarr[2];
-            unsigned short j = 0;
-            while (std::getline(ss, nums, ','))  
-            {
-                iarr[j] = stoi(nums);
-                j++;
-            }
-            
-            ImVec2 vpos{static_cast<float>(iarr[0]),static_cast<float>(iarr[1])};
-            printf_s("%f, %f\n", vpos.x, vpos.y);
-            */
-
-            //FIXME: set editor hovered and window focused...
-
-            //ImNodes::SetNodeScreenSpacePos(node_id, vpos);
-            //ImNodes::SnapNodeToGrid(node_id);
-            //this->nodes.push_back(new MultiplyNode(this, node_id));
-        }
-
-        ImNodes::LoadCurrentEditorStateFromIniFile("save_load.ini");
-
-
-        //this->links.resize(num_links);
-
-        // FIXME:
-        /*
-        for(size_t i = 0; i < num_nodes; i++)
-        {
-            fin.read(reinterpret_cast<char*>(&this->nodes.at(0)->id), static_cast<std::streamsize>(sizeof(int)));
-        }
-
-        fin.read(
-            reinterpret_cast<char*>(this->links.data()),
-            static_cast<std::streamsize>(sizeof(Link) * num_links));
-        */
-
-
-
-        // copy current_id into memory
-        //fin.read(reinterpret_cast<char*>(&this->current_id), static_cast<std::streamsize>(sizeof(int)));
-    }
-    catch(const std::exception& e)
-    {
-        printf_s("%s\n", e.what());
-    }
     
     
 }
+
+// FIXME: add .ini file read/writing tosave current editor state in a different function.
 
 void node_editor::EditorManager::show_node_list()
 {
@@ -861,29 +762,40 @@ void node_editor::EditorManager::show_shader_screen(Editor& editor, Texture2D*& 
 {
     ImGui::BeginChild(2, ImVec2{820, 800}, true);
     ImGui::Image(*texture, {800, 600}, {-1, 1}, {0, 0});
+
+    if (ImGui::Button("load shader"))
+    ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".glsl,.vert,.frag", "../..");
+
+    if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) 
+    {
+        // action if OK
+        if (ImGuiFileDialog::Instance()->IsOk())
+        {
+            file_path_name = ImGuiFileDialog::Instance()->GetFilePathName();
+            std::cout << file_path_name << std::endl;
+            // std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+            
+            // FIXME: fix the structure of screen_shader...
+        }
         
-        if(ImGui::Button("compile shader"))
-        {
-            delete shader;
-            glcompiler::init();
-            shader = new Shader2D();
-            //shader->load_shader_code("../../shaders/test_vert.glsl", Shader2D::ShaderCodeType::VERTEX_SHADER);
-            shader->load_shader_code("../../shaders/notexture_frag.glsl");
-            glcompiler::compile_and_attach_shaders(shader);
-        }
+        // close
+        ImGuiFileDialog::Instance()->Close();
+    }  
 
-        if(ImGui::Button("save"))
-        {
-            editor.save();
-        }
-        if(ImGui::Button("load"))
-        {
-            editor.load();
-        }
+    if(ImGui::Button("compile shader"))
+    {
+        delete shader;
+        glcompiler::init();
+        shader = new Shader2D();
+        //shader->load_shader_code("../../shaders/test_vert.glsl", Shader2D::ShaderCodeType::VERTEX_SHADER);
+        shader->load_shader_code(file_path_name.c_str());
+        glcompiler::compile_and_attach_shaders(shader);
+    }
+        
 
-        ImGui::SetWindowFontScale(2.0);
-        ImGui::TextColored({1.0, 0.0, 0.0, 1.0}, "%s", compiler_info.compile_log_info);
-        ImGui::SetWindowFontScale(1.0);
+    ImGui::SetWindowFontScale(1.2);
+    ImGui::TextColored({1.0, 0.0, 0.0, 1.0}, "%s", compiler_info.compile_log_info);
+    ImGui::SetWindowFontScale(1.0);
 
     ImGui::EndChild();
     

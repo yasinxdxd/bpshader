@@ -77,7 +77,7 @@ void gui_start(yt2d::Window& window)
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330 core");
+    ImGui_ImplOpenGL3_Init("#version 430 core");
 
     INIT_IO
     INIT_STYLE

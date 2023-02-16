@@ -27,7 +27,7 @@ int main()
     
     screen_shader->load_shader_code("../../shaders/notexture_frag.glsl", Shader2D::ShaderCodeType::FRAGMENT_SHADER);
     
-
+    ImGui::GetMousePos();
     
 
     glcompiler::init();
@@ -44,13 +44,16 @@ ImGui::Begin("hey");
 ImGui::Image(*test_render_texture.get_texture(), {200, 200});
 ImGui::End();
 */
+
+    float ms = 0;
     while(!window.isClose())
     {
         window.pollEvent();
-
-        uint8_t ms = (uint8_t)duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+        ms++;
+        //uint8_t ms = (uint8_t)duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
         //std::cout << ms / 256.0 << std::endl;
-        screen_shader->set<float>("time", ms / 256.0);
+        screen_shader->set<float, 2>("mouse_pos", ImGui::GetMousePos().x, ImGui::GetMousePos().y);
+        screen_shader->set<float>("time", ms);
 
         //glViewport(200, 0, 800, 600);
         test_render_texture.bind();

@@ -153,7 +153,7 @@ _NORETURN_ void Shader2D::set<unsigned int, 2>(std::string name, unsigned int va
 }
 
 template <>
-_NORETURN_ void Shader2D::set<float, 2>(std::string name, float value) const
+_NORETURN_ void Shader2D::set<float, 2>(std::string name, float value1, float value2) const
 {
     float values[2];
 
@@ -161,7 +161,7 @@ _NORETURN_ void Shader2D::set<float, 2>(std::string name, float value) const
 
     glUniform2f(
         glGetUniformLocation(m_gl_shader2d_program_id, name.c_str()),
-        values[0], values[1]);
+        value1, value2);
 }
 
 template <>
