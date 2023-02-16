@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 
+struct ImVec2;
 struct ImNodesEditorContext;
 class Texture2D;
 class Shader2D;
@@ -163,6 +164,8 @@ namespace node_editor
         void shutdown();
         void save();
         void load();
+        void create_node(int current_id, Node::NodeType type, ImVec2 pos);
+        void delete_node(int node_id);
     };   
 
     struct EditorManager

@@ -485,90 +485,18 @@ void node_editor::Editor::show_editor()
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
         ImNodes::IsEditorHovered() && (ImGui::IsKeyReleased(ImGuiKey_A)))
     {
-        const int node_id = current_id;
-        ImNodes::SetNodeScreenSpacePos(node_id, ImGui::GetMousePos());
-        ImNodes::SnapNodeToGrid(node_id);
-
-        switch (EditorManager::item_current_idx)
-        {
-        case node_editor::Node::NodeType::MultiplyNode:
-            this->nodes.push_back(new MultiplyNode(node_id));
-            break;
-        case node_editor::Node::NodeType::AdditionNode:
-            this->nodes.push_back(new AdditionNode(node_id));
-            break;
-        case node_editor::Node::NodeType::FloatNode:
-            this->nodes.push_back(new FloatNode(node_id));
-            break;
-        case node_editor::Node::NodeType::BoolNode:
-            this->nodes.push_back(new BoolNode(node_id));
-            break;
-        case node_editor::Node::NodeType::TimeNode:
-            this->nodes.push_back(new TimeNode(node_id));
-            break;
-        case node_editor::Node::NodeType::ConditionNode:
-            this->nodes.push_back(new ConditionNode(node_id));
-            break;
-        case node_editor::Node::NodeType::SinFunctionNode :
-            this->nodes.push_back(new SinFunctionNode(node_id));
-            break;
-
-        default:
-            break;
-        }
+        create_node(current_id, static_cast<Node::NodeType>(EditorManager::item_current_idx), ImGui::GetMousePos());
     }
 
     // delete nodes
-    {  
+    if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
+        ImNodes::IsEditorHovered() && (ImGui::IsKeyReleased(ImGuiKey_D)))
+    {
         ImNodes::GetSelectedNodes(selected_node_ids);
-
-        if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
-            ImNodes::IsEditorHovered() && (ImGui::IsKeyReleased(ImGuiKey_D)))
-        {
-            // FIXME: do allow user to delete more than one node.
-            // FIXME: when any node is selected then selection is canceled, and if try to delete node it crashes!
-            if (selected_node_ids[0] != -1)
-            {
-                int node_index = get_node_index_by_id(selected_node_ids[0]);
-                if (node_index != -1)
-                {
-                    // first delete links
-                    for (size_t i = 0; i < this->links.size();)
-                    {
-                        bool _check = false;
-                        if ((links[i].end_attr > this->nodes[node_index]->id &&
-                            links[i].end_attr < this->nodes[node_index]->last_id)
-                            ||
-                            (links[i].start_attr > this->nodes[node_index]->id &&
-                            links[i].start_attr < this->nodes[node_index]->last_id)
-                        )
-                        {
-                            size_t link_index = get_link_index_by_id(links[i].id);
-                            
-                            this->links.erase(this->links.begin() + link_index);
-                            i = 0;
-                            _check = true;
-                        }
-                        if(_check == false)
-                            i++;
-                    }
-
-
-                    for(size_t j = node_index + 1; j < this->nodes.size(); j++)
-                    {
-                        auto pos = ImNodes::GetNodeEditorSpacePos(this->nodes.at(j)->id);
-                        this->nodes.at(j)->id -= (this->nodes.at(node_index)->last_id - this->nodes.at(node_index)->id);
-                        ImNodes::SetNodeEditorSpacePos(this->nodes.at(j)->id, pos);
-                    }
-
-                    this->nodes.erase(this->nodes.begin() + node_index);
-                                                                //i
-                    ImNodes::ClearNodeSelection(selected_node_ids[0]);
-                }
-            }
-            memset(selected_node_ids, -1, 64*sizeof(int));
-        }
+        delete_node(selected_node_ids[0]);
+        memset(selected_node_ids, -1, 64*sizeof(int));
     }
+    
 
     int _last_id = 0;
     for (size_t i = 0; i < this->nodes.size(); i++)
@@ -717,11 +645,54 @@ void node_editor::Editor::save()
 {
     // TODO: create your own .ini file ignore the imgui's and imnodes' ini files. Create them according to the node types and all neccessary informations
     // about nodes for interpreting that ini file into a real .glsl file 
-    // that can be compiled as a (fragment(it has some global variables as vertex informations, time and mouse coordinates...)) shader.
     // FIXME:
     // Save the internal imnodes state
-    ImNodes::SaveCurrentEditorStateToIniFile("save_load.ini");
+    if (ImGui::Button("save node editor state"))
+    {
+        // TODO: add some popup menu to give a name to the saved file...
+        mINI::INIFile nodeeditor_save_file("node_editor_save_file.ini");
 
+        mINI::INIStructure ini;
+
+        // save size informations
+        auto str_node_size = std::to_string(this->nodes.size());
+        auto str_link_size = std::to_string(this->links.size());
+        ini["size"]["node_size"] = str_node_size;
+        ini["size"]["link_size"] = str_link_size;
+
+        // save node informations
+        for (size_t i = 0; i < this->nodes.size(); i++)
+        {
+            auto str_node_index = std::to_string(i); 
+            auto str_node_id = std::to_string(this->nodes[i]->id);
+            auto str_node_type = std::to_string(this->nodes[i]->type);
+            auto vec_node_pos = ImNodes::GetNodeScreenSpacePos(this->nodes[i]->id);
+            auto str_node_pos_x = std::to_string(vec_node_pos.x);
+            auto str_node_pos_y = std::to_string(vec_node_pos.y);
+            ini["node" + str_node_index]["node_id"] = str_node_id;
+            ini["node" + str_node_index]["node_type"] = str_node_type;
+            ini["node" + str_node_index]["node_pos_x"] = str_node_pos_x;
+            ini["node" + str_node_index]["node_pos_y"] = str_node_pos_y;
+        }
+
+        // save link informations
+        for (size_t i = 0; i < this->links.size(); i++)
+        {
+            auto str_link_index = std::to_string(i); 
+            auto str_link_id = std::to_string(this->links[i].id);
+            auto str_link_end_attr = std::to_string(this->links[i].end_attr);
+            auto str_link_start_attr = std::to_string(this->links[i].start_attr);
+            
+            ini["link" + str_link_index]["link_id"] = str_link_id;
+            ini["link" + str_link_index]["link_end"] = str_link_end_attr;
+            ini["link" + str_link_index]["link_start"] = str_link_start_attr;
+        }
+        
+        // @param true, pretty print(add white spaces)
+        nodeeditor_save_file.generate(ini, true);
+
+    }
+    
     // Dump our editor state as bytes into a file
     // FIXME:
     
@@ -730,8 +701,158 @@ void node_editor::Editor::save()
 void node_editor::Editor::load()
 {
 
+    // TODO: ImGuiFileDialog::Instance() do not use that instead create instance variables...
+    // and also use file dialog here too.
+
+    // FIXME: right now it just read one file which is named "node_editor_save_file.ini" it will be changed
+
+    if (ImGui::Button("load node editor state"))
+    {
+
+        // first erase all the nodes and links
+        const size_t current_node_size = this->nodes.size();
+        for (size_t i = 0; i < current_node_size; i++)
+        {
+            delete_node(this->nodes.at(current_node_size - i - 1)->id);
+        }
+        /**/
+        
+        mINI::INIFile file("node_editor_save_file.ini");
+
+        mINI::INIStructure ini;
+
+        file.read(ini);
+        
+        // read value safely - if key or section don't exist they will NOT be created
+        // returns a copy
+
+        // load size informations
+        
+        auto str_node_size = ini.get("size").get("node_size");
+        auto str_link_size = ini.get("size").get("link_size");
+        const size_t node_size = std::stoi(str_node_size);
+        const size_t link_size = std::stoi(str_link_size);
+
+        // load node informations
+        for (size_t i = 0; i < node_size; i++)
+        {
+            auto str_node_index = std::to_string(i);
+            auto str_node_id = ini.get("node" + str_node_index).get("node_id");
+            auto str_node_type = ini.get("node" + str_node_index).get("node_type");
+            auto str_node_pos_x = ini.get("node" + str_node_index).get("node_pos_x");
+            auto str_node_pos_y = ini.get("node" + str_node_index).get("node_pos_y");
+
+            int node_id = std::stoi(str_node_id);
+            int node_type = std::stoi(str_node_type);
+            int node_pos_x = std::stoi(str_node_pos_x);
+            int node_pos_y = std::stoi(str_node_pos_y);
+            create_node(node_id, static_cast<Node::NodeType>(node_type), ImVec2(node_pos_x, node_pos_y));
+        }
+
+        // load link informations
+        for (size_t i = 0; i < link_size; i++)
+        {
+            auto str_link_index = std::to_string(i);
+            auto str_link_id = ini.get("link" + str_link_index).get("link_id");
+            auto str_link_end = ini.get("link" + str_link_index).get("link_end");
+            auto str_link_start = ini.get("link" + str_link_index).get("link_start");
+
+            int link_id = std::stoi(str_link_id);
+            int link_end_attr = std::stoi(str_link_end);
+            int link_start_attr = std::stoi(str_link_start);
+
+            Link link;
+            link.id = link_id;
+            link.end_attr = link_end_attr;
+            link.start_attr = link_start_attr;
+            this->links.push_back(link);
+        }
+    }
     
-    
+}
+
+void node_editor::Editor::create_node(int current_id, Node::NodeType type, ImVec2 pos)
+{
+    const int node_id = current_id;
+    ImNodes::SetNodeScreenSpacePos(node_id, pos);
+    ImNodes::SnapNodeToGrid(node_id);
+
+    switch (type)
+    {
+    case node_editor::Node::NodeType::MultiplyNode:
+        this->nodes.push_back(new MultiplyNode(node_id));
+        break;
+    case node_editor::Node::NodeType::AdditionNode:
+        this->nodes.push_back(new AdditionNode(node_id));
+        break;
+    case node_editor::Node::NodeType::FloatNode:
+        this->nodes.push_back(new FloatNode(node_id));
+        break;
+    case node_editor::Node::NodeType::BoolNode:
+        this->nodes.push_back(new BoolNode(node_id));
+        break;
+    case node_editor::Node::NodeType::TimeNode:
+        this->nodes.push_back(new TimeNode(node_id));
+        break;
+    case node_editor::Node::NodeType::ConditionNode:
+        this->nodes.push_back(new ConditionNode(node_id));
+        break;
+    case node_editor::Node::NodeType::SinFunctionNode :
+        this->nodes.push_back(new SinFunctionNode(node_id));
+        break;
+
+    default:
+        break;
+    }
+}
+
+void node_editor::Editor::delete_node(int node_id)
+{
+    // FIXME: do allow user to delete more than one node.
+    // FIXME: when any node is selected then selection is canceled, and if try to delete node it crashes!
+    // FIXME: still there is some problems about link deletions
+    if (node_id != -1)
+    {
+        int node_index = get_node_index_by_id(node_id);
+        if (node_index != -1)
+        {
+            // first delete links
+            for (size_t i = 0; i < this->links.size();)
+            {
+                bool _check = false;
+                if ((links[i].end_attr > this->nodes[node_index]->id &&
+                    links[i].end_attr < this->nodes[node_index]->last_id)
+                    ||
+                    (links[i].start_attr > this->nodes[node_index]->id &&
+                    links[i].start_attr < this->nodes[node_index]->last_id)
+                )
+                {
+                    size_t link_index = get_link_index_by_id(links[i].id);
+                    
+                    this->links.erase(this->links.begin() + link_index);
+                    i = 0;
+                    _check = true;
+                }
+                if(_check == false)
+                    i++;
+            }
+
+
+            for(size_t j = node_index + 1; j < this->nodes.size(); j++)
+            {
+                auto pos = ImNodes::GetNodeEditorSpacePos(this->nodes.at(j)->id);
+                this->nodes.at(j)->id -= (this->nodes.at(node_index)->last_id - this->nodes.at(node_index)->id);
+                ImNodes::SetNodeEditorSpacePos(this->nodes.at(j)->id, pos);
+            }
+
+            delete this->nodes.at(node_index);
+            this->nodes.erase(this->nodes.begin() + node_index);
+                                                        //i
+            if(ImNodes::IsNodeSelected(node_id))
+                ImNodes::ClearNodeSelection(node_id);
+        }
+    }
+
 }
 
 // FIXME: add .ini file read/writing tosave current editor state in a different function.
@@ -763,8 +884,11 @@ void node_editor::EditorManager::show_shader_screen(Editor& editor, Texture2D*& 
     ImGui::BeginChild(2, ImVec2{820, 800}, true);
     ImGui::Image(*texture, {800, 600}, {-1, 1}, {0, 0});
 
-    if (ImGui::Button("load shader"))
-    ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".glsl,.vert,.frag", "../..");
+    if (ImGui::Button("load shader file"))
+        ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".glsl,.vert,.frag", "../..");
+    
+    ImGui::SameLine();
+    ImGui::Text(file_path_name.c_str());
 
     if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) 
     {
@@ -791,6 +915,9 @@ void node_editor::EditorManager::show_shader_screen(Editor& editor, Texture2D*& 
         shader->load_shader_code(file_path_name.c_str());
         glcompiler::compile_and_attach_shaders(shader);
     }
+
+    editor.save();
+    editor.load();
         
 
     ImGui::SetWindowFontScale(1.2);
