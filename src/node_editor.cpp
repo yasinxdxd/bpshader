@@ -8,6 +8,7 @@
 #include <shader2d.hpp>
 #include <iostream>
 #include <defs.hh>
+#include <node_to_glsl_interpreter.hpp>
 
 #define IM_VEC2_CLASS_EXTRA \
 ImVec2 ImVec2::operator+(ImVec2 right)\
@@ -244,6 +245,201 @@ int node_editor::BoolNode::show()
     return this->last_id;
 }
 
+node_editor::Vec2Node::Vec2Node(const int i) : Node(i, Node::NodeType::Vec2Node)
+{
+    this->inputs.resize(2);
+    this->outputs.resize(1);
+}
+
+int node_editor::Vec2Node::show()
+{
+    const int tmp_id = this->id;
+    ImNodes::BeginNode(this->id);
+    
+    ImNodes::BeginNodeTitleBar();
+    ImGui::Text("Vec2");
+    ImNodes::EndNodeTitleBar();
+
+    uint8_t i = 0;
+    for(; i < this->inputs.size(); i++)
+    {
+        ImNodes::BeginInputAttribute(++this->id);
+        ImGui::Text("in");
+        ImNodes::EndInputAttribute();
+
+        ImGui::SameLine();
+
+        ImNodes::BeginStaticAttribute(++this->id);
+        ImGui::PushItemWidth(120.0f);
+        ImGui::DragFloat("##value", &this->inputs[i], 0.1f);
+        ImGui::PopItemWidth();
+        ImNodes::EndStaticAttribute();
+    }
+
+    for(uint8_t j = 0; j < this->outputs.size(); j++)
+    {
+        ImNodes::BeginOutputAttribute(++this->id);
+        const float text_width = ImGui::CalcTextSize("out").x;
+        ImGui::Indent(120.f + ImGui::CalcTextSize("##value").x - text_width);
+        ImGui::Text("out");
+        ImNodes::EndOutputAttribute();
+    }
+
+    ImNodes::EndNode();
+    this->last_id = ++this->id;
+    this->id = tmp_id;
+    return this->last_id;
+}
+
+node_editor::Vec3Node::Vec3Node(const int i) : Node(i, Node::NodeType::Vec3Node)
+{
+    this->inputs.resize(2);
+    this->outputs.resize(1);
+}
+
+int node_editor::Vec3Node::show()
+{
+    const int tmp_id = this->id;
+    ImNodes::BeginNode(this->id);
+    
+    ImNodes::BeginNodeTitleBar();
+    ImGui::Text("Vec3");
+    ImNodes::EndNodeTitleBar();
+
+    uint8_t i = 0;
+    for(; i < this->inputs.size(); i++)
+    {
+        ImNodes::BeginInputAttribute(++this->id);
+        ImGui::Text("in");
+        ImNodes::EndInputAttribute();
+
+        ImGui::SameLine();
+
+        ImNodes::BeginStaticAttribute(++this->id);
+        ImGui::PushItemWidth(120.0f);
+        ImGui::DragFloat("##value", &this->inputs[i], 0.1f);
+        ImGui::PopItemWidth();
+        ImNodes::EndStaticAttribute();
+    }
+
+    for(uint8_t j = 0; j < this->outputs.size(); j++)
+    {
+        ImNodes::BeginOutputAttribute(++this->id);
+        const float text_width = ImGui::CalcTextSize("out").x;
+        ImGui::Indent(120.f + ImGui::CalcTextSize("##value").x - text_width);
+        ImGui::Text("out");
+        ImNodes::EndOutputAttribute();
+    }
+
+    ImNodes::EndNode();
+    this->last_id = ++this->id;
+    this->id = tmp_id;
+    return this->last_id;
+}
+
+node_editor::Vec4Node::Vec4Node(const int i) : Node(i, Node::NodeType::Vec4Node)
+{
+    this->inputs.resize(2);
+    this->outputs.resize(1);
+}
+
+int node_editor::Vec4Node::show()
+{
+    const int tmp_id = this->id;
+    ImNodes::BeginNode(this->id);
+    
+    ImNodes::BeginNodeTitleBar();
+    ImGui::Text("Vec4");
+    ImNodes::EndNodeTitleBar();
+
+    uint8_t i = 0;
+    for(; i < this->inputs.size(); i++)
+    {
+        ImNodes::BeginInputAttribute(++this->id);
+        ImGui::Text("in");
+        ImNodes::EndInputAttribute();
+
+        ImGui::SameLine();
+
+        ImNodes::BeginStaticAttribute(++this->id);
+        ImGui::PushItemWidth(120.0f);
+        ImGui::DragFloat("##value", &this->inputs[i], 0.1f);
+        ImGui::PopItemWidth();
+        ImNodes::EndStaticAttribute();
+    }
+
+    for(uint8_t j = 0; j < this->outputs.size(); j++)
+    {
+        ImNodes::BeginOutputAttribute(++this->id);
+        const float text_width = ImGui::CalcTextSize("out").x;
+        ImGui::Indent(120.f + ImGui::CalcTextSize("##value").x - text_width);
+        ImGui::Text("out");
+        ImNodes::EndOutputAttribute();
+    }
+
+    ImNodes::EndNode();
+    this->last_id = ++this->id;
+    this->id = tmp_id;
+    return this->last_id;
+}
+
+node_editor::ResultColorNode::ResultColorNode(const int i) : Node(i, Node::NodeType::ResultColorNode)
+{
+    this->inputs.resize(4);
+    this->outputs.resize(1);
+}
+
+node_editor::ResultColorNode::~ResultColorNode()
+{
+    if (s_instance)
+        delete s_instance;
+}
+
+node_editor::ResultColorNode* node_editor::ResultColorNode::get_instance(const int id)
+{
+    return s_instance == nullptr ? new ResultColorNode(id) : s_instance;
+}
+
+int node_editor::ResultColorNode::show()
+{
+    const int tmp_id = this->id;
+    ImNodes::BeginNode(this->id);
+    
+    ImNodes::BeginNodeTitleBar();
+    ImGui::Text("Vec4");
+    ImNodes::EndNodeTitleBar();
+
+    uint8_t i = 0;
+    for(; i < this->inputs.size(); i++)
+    {
+        ImNodes::BeginInputAttribute(++this->id);
+        ImGui::Text("in");
+        ImNodes::EndInputAttribute();
+
+        ImGui::SameLine();
+
+        ImNodes::BeginStaticAttribute(++this->id);
+        ImGui::PushItemWidth(120.0f);
+        ImGui::DragFloat("##value", &this->inputs[i], 0.1f);
+        ImGui::PopItemWidth();
+        ImNodes::EndStaticAttribute();
+    }
+
+    for(uint8_t j = 0; j < this->outputs.size(); j++)
+    {
+        ImNodes::BeginOutputAttribute(++this->id);
+        const float text_width = ImGui::CalcTextSize("out").x;
+        ImGui::Indent(120.f + ImGui::CalcTextSize("##value").x - text_width);
+        ImGui::Text("out");
+        ImNodes::EndOutputAttribute();
+    }
+
+    ImNodes::EndNode();
+    this->last_id = ++this->id;
+    this->id = tmp_id;
+    return this->last_id;
+}
+
 node_editor::TimeNode::TimeNode(const int i) : Node(i, Node::NodeType::TimeNode)
 {
     this->inputs.resize(0);
@@ -261,7 +457,6 @@ int node_editor::TimeNode::show()
 
     //Shader2D s;
     //s.set<float, 1>("time", t);
-    // FIXME: add time constant to the shader as a uniform variable...
     this->outputs[0]++;
 
     for(uint8_t j = 0; j < this->outputs.size(); j++)
@@ -671,6 +866,12 @@ void node_editor::Editor::save()
             auto str_node_pos_y = std::to_string(vec_node_pos.y);
             ini["node" + str_node_index]["node_id"] = str_node_id;
             ini["node" + str_node_index]["node_type"] = str_node_type;
+            for (size_t j = 0; j < this->nodes[i]->inputs.size(); j++)
+            {
+                auto str_node_input_index = std::to_string(j);
+                auto str_node_input_value = std::to_string(this->nodes[i]->inputs[j]);
+                ini["node" + str_node_index]["input" + str_node_input_index] = str_node_input_value; 
+            }
             ini["node" + str_node_index]["node_pos_x"] = str_node_pos_x;
             ini["node" + str_node_index]["node_pos_y"] = str_node_pos_y;
         }
@@ -771,6 +972,15 @@ void node_editor::Editor::load()
     
 }
 
+void node_editor::Editor::turn_into_glsl()
+{
+    if (ImGui::Button("make glsl"))
+    {
+        auto rgba = interprete_result_color(*this, "node_editor_save_file.ini");
+        generate_glsl(rgba);
+    }
+}
+
 void node_editor::Editor::create_node(int current_id, Node::NodeType type, ImVec2 pos)
 {
     const int node_id = current_id;
@@ -790,6 +1000,18 @@ void node_editor::Editor::create_node(int current_id, Node::NodeType type, ImVec
         break;
     case node_editor::Node::NodeType::BoolNode:
         this->nodes.push_back(new BoolNode(node_id));
+        break;
+    case node_editor::Node::NodeType::Vec2Node:
+        this->nodes.push_back(new Vec2Node(node_id));
+        break;
+    case node_editor::Node::NodeType::Vec3Node:
+        this->nodes.push_back(new Vec3Node(node_id));
+        break;
+    case node_editor::Node::NodeType::Vec4Node:
+        this->nodes.push_back(new Vec4Node(node_id));
+        break;
+    case node_editor::Node::NodeType::ResultColorNode:
+        this->nodes.push_back(std::move(ResultColorNode::get_instance(node_id)));
         break;
     case node_editor::Node::NodeType::TimeNode:
         this->nodes.push_back(new TimeNode(node_id));
@@ -918,6 +1140,7 @@ void node_editor::EditorManager::show_shader_screen(Editor& editor, Texture2D*& 
 
     editor.save();
     editor.load();
+    editor.turn_into_glsl();
         
 
     ImGui::SetWindowFontScale(1.2);

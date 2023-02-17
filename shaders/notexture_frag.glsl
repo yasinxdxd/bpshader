@@ -110,7 +110,7 @@ void advect(int b, float[] d, float[] d0, float[] velocX, float[] velocY, float 
 }
 
 
-void set_bnd(int b, float[] x) {
+void set_bnd(int b, out float x) {
 
   for (int i = 1; i < Nx - 1; i++) {
     x[IX(i, 0)] = b == 2 ? -x[IX(i, 1)] : x[IX(i, 1)];
@@ -126,7 +126,8 @@ void set_bnd(int b, float[] x) {
   x[IX(0, Ny-1)] = 0.5f * (x[IX(1, Ny-1)] + x[IX(0, Ny-2)]);
   x[IX(Nx-1, 0)] = 0.5f * (x[IX(Nx-2, 0)] + x[IX(Nx-1, 1)]);
   x[IX(Nx-1, Ny-1)] = 0.5f * (x[IX(Nx-2, Ny-1)] + x[IX(Nx-1, Ny-2)]);
-}*/
+}
+*/
 /******************************************************************************************/
 
 void main()

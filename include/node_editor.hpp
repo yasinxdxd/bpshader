@@ -28,6 +28,10 @@ namespace node_editor
             AdditionNode,
             FloatNode,
             BoolNode,
+            Vec2Node,
+            Vec3Node,
+            Vec4Node,
+            ResultColorNode,
             TimeNode,
             ConditionNode,
             SinFunctionNode,
@@ -99,6 +103,17 @@ namespace node_editor
         virtual int show() override;
     };
 
+    struct ResultColorNode : public NODE_VARIABLE
+    {
+    private:
+        static inline ResultColorNode* s_instance = nullptr;
+        ResultColorNode(const int i);
+        ~ResultColorNode();
+    public:
+        static ResultColorNode* get_instance(const int id);
+        virtual int show() override;
+    };
+
     // TODO: implement the time uniform value from the shader to TimeNode itself to be shown
     struct TimeNode : public NODE_BUILTIN
     {
@@ -164,6 +179,7 @@ namespace node_editor
         void shutdown();
         void save();
         void load();
+        void turn_into_glsl();
         void create_node(int current_id, Node::NodeType type, ImVec2 pos);
         void delete_node(int node_id);
     };   
@@ -171,7 +187,7 @@ namespace node_editor
     struct EditorManager
     {
         static inline const char* const items[Node::NodeType::NodeType_COUNT] = {
-            "Multiply", "Add", "Float1", "Bool", "Time", "Condition", "SinFunctionNode"
+            "Multiply", "Add", "Float1", "Bool", "Vec2", "Vec3", "Vec4", "ResultColorNode", "Time", "Condition", "SinFunctionNode"
         };
         static inline int item_current_idx = 0; // Here we store our selection data as an index.
         static inline std::string file_path_name = "../../shaders/notexture_frag.glsl";
