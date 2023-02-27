@@ -59,7 +59,7 @@ static inline void InitStyle()
 #define INIT_IO InitIO();
 #define INIT_STYLE InitStyle();
 
-node_editor::Editor editor;
+std::vector<node_editor::Editor> editors;
 yt2d::Window* pwindow = nullptr;
 
 void gui_start(yt2d::Window& window)
@@ -81,8 +81,8 @@ void gui_start(yt2d::Window& window)
 
     INIT_IO
     INIT_STYLE
-
-    editor.initialize("Node Editor");
+    editors.resize(1);
+    editors[0].initialize("Node Editor");
 }
 
 void gui_draw(Texture2D* textures, Shader2D*& shader)
@@ -104,7 +104,7 @@ void gui_draw(Texture2D* textures, Shader2D*& shader)
 
         node_editor::EditorManager::show_node_list();
         ImGui::SameLine(320.0f);
-        node_editor::EditorManager::show_shader_screen(editor, textures, shader);
+        node_editor::EditorManager::show_shader_screen(editors[0], textures, shader);
         node_editor::EditorManager::show_shortcuts();
         
     ImGui::End();
@@ -112,7 +112,11 @@ void gui_draw(Texture2D* textures, Shader2D*& shader)
 
 
     ImGui::PushFont(pfont_ubuntu);
-    editor.show_editor();
+    for (size_t i = 0; i < editors.size(); i++)
+    {
+        editors[i].show_editor();
+    }
+    
     ImGui::PopFont();
 
 	
@@ -122,7 +126,10 @@ void gui_draw(Texture2D* textures, Shader2D*& shader)
 
 void gui_destroy()
 {
-    editor.shutdown();
+    for (size_t i = 0; i < editors.size(); i++)
+    {
+        editors[i].shutdown();
+    }
     ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImNodes::DestroyContext();
