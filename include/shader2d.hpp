@@ -20,13 +20,13 @@ public:
     Shader2D& operator=(const Shader2D&) = delete; // non copyable
     ~Shader2D();
 
-    void load_shader_code(const char* path, ShaderCodeType type = ShaderCodeType::FRAGMENT_SHADER);
+    _NORETURN_ void load_shader_code(const char* path, ShaderCodeType type = ShaderCodeType::FRAGMENT_SHADER);
 
     
     template <typename T, size_t _D = 1>
-    void set(std::string name, T value) const;
+    _NORETURN_ void set(std::string name, T value) const;
     template <typename T, size_t _D = 2>
-    void set(std::string name, T value1, T value2) const;
+    _NORETURN_ void set(std::string name, T value1, T value2) const;
 
     operator unsigned int();
 
