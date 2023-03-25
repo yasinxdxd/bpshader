@@ -1,8 +1,7 @@
-#include <shader_compiler.hpp>
+//#include <shader_compiler.hpp>
 #include <shader2d.hpp>
 #include <glad/glad.h>
 #include <iostream>
-#include <defs.hh>
 
 extern const char* _SHADER2D_DEFAULT_VERTEX_SHADER_CODE_TEXT;
 extern glshader_t _SHADER2D_DEFAULT_GL_VERTEX_SHADER;

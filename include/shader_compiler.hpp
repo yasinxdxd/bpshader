@@ -3,11 +3,13 @@
 
 class Shader2D;
 
+#include <defs.hh>
+
 namespace glcompiler
 {
     namespace _priv
     {
-        void compile_default_vetex_shader();
+        _NORETURN_ void compile_default_vetex_shader();
         struct _compiler_info
         {
             char compile_log_info[512];
@@ -16,9 +18,9 @@ namespace glcompiler
 
     void init();
     
-    void compile_and_attach_shaders(Shader2D* shader);
+    _NORETURN_ void compile_and_attach_shaders(Shader2D* shader);
     //FIXME: it will save shader binary into a file.
-    void save_shader_binary();
+    _NORETURN_ void save_shader_binary();
 
 
 }

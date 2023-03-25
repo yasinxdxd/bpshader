@@ -1,13 +1,22 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <texture2d.hpp>
 #include <stb_image.h>
-#include <defs.hh>
 #include <glad/glad.h>
 #include <stdio.h>
 
 Texture2D::Texture2D(): m_texture2d_data(nullptr)
 {
 
+}
+
+Texture2D::Texture2D(const char *path)
+{
+    load_texture(path);
+}
+
+Texture2D::Texture2D(int width, int height, unsigned char *data)
+{
+    create_texture(width, height, data);
 }
 
 Texture2D::~Texture2D()
@@ -26,7 +35,7 @@ bool Texture2D::load_texture(const char* path)
     return true;
 }
 
-void Texture2D::create_texture(int width, int height, unsigned char* data)
+_NORETURN_ void Texture2D::create_texture(int width, int height, unsigned char* data)
 {
     m_texture2d_data = NULL;
     m_texture2d_width = width;
@@ -90,6 +99,6 @@ Texture2D::operator unsigned int()
 
 Texture2D::operator void*()
 {
-    return reinterpret_cast<void*>(static_cast<unsigned __int64>(m_gl_texture2d_texture_id));
+    return reinterpret_cast<void*>(static_cast<__uint64>(m_gl_texture2d_texture_id));
     //first we cast it int 64 to make the size 8 byte the same size with void*, then cast it void*
 }

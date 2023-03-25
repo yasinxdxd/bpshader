@@ -1,9 +1,10 @@
 #ifndef DEFS_HH
 #define DEFS_HH
 
-
 typedef unsigned int glshader_t;
-
+//#ifdef __EMSCRIPTEN__
+typedef unsigned long long int __uint64;
+//#endif
 #define _NORETURN_ [[ noreturn ]]
 
 #define PI 3.14159

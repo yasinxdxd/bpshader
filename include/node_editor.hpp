@@ -47,6 +47,7 @@ namespace node_editor
 
         Editor* m_editor;
         Node(const int i, NodeType t) : id(i), type(t) {}
+        virtual ~Node() {}
 
         virtual int show() = 0;
 
