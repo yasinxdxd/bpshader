@@ -1,0 +1,5 @@
+call C:\Users\Lenovo\Desktop\GitHub\emsdk\emsdk_env.bat
+emcc -I"include" -I"extern/imgui_sdl_backend" -I"extern/glad/include" -I"extern/mini" -I"extern/imguifiledialog/include" -I"extern/stb_image" -Winvalid-noreturn src/defaults.cc src/main.cpp src/node_editor.cpp src/render_texture2d.cpp src/renderables.cpp src/shader_compiler.cpp src/shader2d.cpp src/texture2d.cpp src/Window.cpp extern/glad/src/glad.c extern/imgui_sdl_backend/imgui_demo.cpp extern/imgui_sdl_backend/imgui_draw.cpp extern/imgui_sdl_backend/imgui_impl_opengl3.cpp extern/imgui_sdl_backend/imgui_impl_sdl.cpp extern/imgui_sdl_backend/imgui_impl_sdlrenderer.cpp extern/imgui_sdl_backend/imgui_tables.cpp extern/imgui_sdl_backend/imgui_widgets.cpp extern/imgui_sdl_backend/imgui.cpp extern/imgui_sdl_backend/imnodes.cpp extern/imguifiledialog/src/ImGuiFileDialog.cpp -s WASM=1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s USE_SDL_TTF=2 -s MIN_WEBGL_VERSION=3 -s MAX_WEBGL_VERSION=3 --preload-file res --preload-file shaders -o build.emscripten/index.js
+
+:: --preload-file res
+:: -s FULL_ES3

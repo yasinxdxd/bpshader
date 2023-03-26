@@ -1,4 +1,7 @@
 build/
+build.emscripten/
+build.SDL/
 .vscode/
 .VSCodeCounter/
 bpshader.png
+res/
