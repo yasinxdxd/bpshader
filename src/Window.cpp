@@ -39,6 +39,7 @@ yt2d::Window::~Window()
 {
     
 #if defined __EMSCRIPTEN__ || defined SDL_BACKEND
+    SDL_GL_DeleteContext(m_sdl_gl_context);
     SDL_DestroyWindow(m_sdl_window);
     SDL_DestroyRenderer(m_sdl_renderer);
 	SDL_Quit();
@@ -158,6 +159,7 @@ YT2D_NODISCARD YT2D_STATUS yt2d::Window::Init()
     
     if (m_sdl_gl_context == NULL)
     {
+        SDL_GL_DeleteContext(m_sdl_gl_context);
         SDL_DestroyWindow(m_sdl_window);
 	    SDL_DestroyRenderer(m_sdl_renderer);
         return YT2D_STATUS_ERROR;

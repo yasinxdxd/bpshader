@@ -64,7 +64,7 @@ namespace yt2d
         SDL_GLContext m_sdl_gl_context;
         bool m_sdl_is_close = false;
     public:
-        SDL_GLContext getSDLGLContext() { return m_sdl_gl_context; }
+        SDL_GLContext& getSDLGLContext() { return m_sdl_gl_context; }
 #else
     private:
         GLFWwindow* m_window;

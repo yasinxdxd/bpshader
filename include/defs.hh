@@ -5,7 +5,11 @@ typedef unsigned int glshader_t;
 //#ifdef __EMSCRIPTEN__
 typedef unsigned long long int __uint64;
 //#endif
+#ifdef __EMSCRIPTEN__
+#define _NORETURN_ 
+#else
 #define _NORETURN_ [[ noreturn ]]
+#endif
 
 #define PI 3.14159
 #define RAD2DEG(x) (x * 180.0) / PI

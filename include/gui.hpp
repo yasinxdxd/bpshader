@@ -117,6 +117,8 @@ void gui_draw(Texture2D* textures, Shader2D*& shader)
     // TODO: del ShowDemoWindow
     ImGui::PushFont(pfont_aldrich);
     //ImGui::ShowDemoWindow();
+/*
+*/
     
     
     ImGui::Begin("SHADER_EDITOR", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus);// | ImGuiWindowFlags_DockNodeHost
@@ -139,10 +141,9 @@ void gui_draw(Texture2D* textures, Shader2D*& shader)
     }
     
     ImGui::PopFont();
-/*
-*/
 
 	ImGui::Render();
+    ImGui::EndFrame();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
