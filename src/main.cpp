@@ -20,20 +20,16 @@ using namespace std::chrono;
 // it is almost a neccesaty to create a context to pass all neccesary variables we create in main to the emscripten_main_loop
 // to use lambda functions a kind of shit when you need to pass a c func-pointer...
 yt2d::Window* window;
-Texture2D test_texture_fbo;
 RenderTexture2D* test_render_texture;
 Shader2D* screen_shader;
+//Quad quad;
+//Quad tr;
 float ms = 0;
 
-void main_loop()//void *arg
+void main_loop(void *arg)//void *arg
 {
-    std::cout << "5" << std::endl;
-    /*
-    */
+    std::cout << "main_loop" << std::endl;
     window->pollEvent();
-    Quad quad;
-    Quad tr;
-    std::cout << "6" << std::endl;
     
     /*
     //uint8_t ms = (uint8_t)duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
@@ -43,8 +39,6 @@ void main_loop()//void *arg
     screen_shader->set<float>("time", ms);
     */
     
-    /*
-    */
     //glViewport(200, 0, 800, 600);
     test_render_texture->bind();
         window->clear();
@@ -72,18 +66,16 @@ void main_loop()//void *arg
 
 int main()
 {
-    std::cout << "1" << std::endl;
+    
     yt2d::Window swindow("SHADER EDITOR", 1920, 1080);
     window = &swindow;
-    std::cout << "2" << std::endl;
-    gui_start(*window);
-    std::cout << "3" << std::endl;
     
+    gui_start(*window);
+    
+    
+    Texture2D test_texture_fbo;
     test_texture_fbo.create_texture(1920, 1080, NULL);
     test_render_texture = new RenderTexture2D(&test_texture_fbo);
-    std::cout << "4" << std::endl;
-    /*
-    */
 
 
     // FIXME: there is smthng wrong with shaders!!!
@@ -100,7 +92,8 @@ int main()
     
 
 #ifdef __EMSCRIPTEN__
-    emscripten_set_main_loop(main_loop, 60, 0);
+    // NOTE: using emscripten_set_main_loop_arg instead of emscripten_set_main_loop fixed every fucking problem!
+    emscripten_set_main_loop_arg(main_loop, nullptr, -1, 1);
 #elif defined SDL_BACKEND
     while(!window->isClose())
     {
