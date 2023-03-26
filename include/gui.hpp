@@ -2,8 +2,13 @@
 #define GUI_HPP
 
 #include <imgui.h>
-#include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#if defined __EMSCRIPTEN__ || defined SDL_BACKEND
+#include <imgui_impl_sdl.h>
+#include <imgui_impl_sdlrenderer.h>
+#else
+#include <imgui_impl_glfw.h>
+#endif
 #include <imgui_internal.h>
 #include <imnodes.h>
 #include <texture2d.hpp>
@@ -11,6 +16,7 @@
 #include <node_editor.hpp>
 //#include <shader_compiler.hpp>
 //#include <shader2d.hpp>
+#include <iostream>
 
 extern glcompiler::_priv::_compiler_info compiler_info;
 
@@ -21,8 +27,14 @@ static inline void InitIO()
     ImGuiIO& io = ImGui::GetIO();
     ImFontConfig config;
     config.MergeMode = true;
+#if defined __EMSCRIPTEN__
+    pfont_aldrich = io.Fonts->AddFontFromFileTTF("../res/Aldrich-Regular.ttf", 16.0f);
+    pfont_ubuntu = io.Fonts->AddFontFromFileTTF("../res/Ubuntu-Title.ttf", 18.0f);//, &config, io.Fonts->GetGlyphRangesChineseFull()
+#else
     pfont_aldrich = io.Fonts->AddFontFromFileTTF("Aldrich-Regular.ttf", 16.0f);
     pfont_ubuntu = io.Fonts->AddFontFromFileTTF("Ubuntu-Title.ttf", 18.0f);//, &config, io.Fonts->GetGlyphRangesChineseFull()
+#endif
+    
 }
 
 #define _MY_IM_COLOR1 ImVec4(0.74f, 0.83f, 0.62f, 1.00f)
@@ -76,8 +88,13 @@ void gui_start(yt2d::Window& window)
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
     // Setup Platform/Renderer backends
+#if defined __EMSCRIPTEN__ || defined SDL_BACKEND
+    ImGui_ImplSDL2_InitForOpenGL(window, window.getSDLGLContext());
+    ImGui_ImplOpenGL3_Init("#version 300 es");
+#else
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 430 core");
+#endif
 
     INIT_IO
     INIT_STYLE
@@ -89,14 +106,18 @@ void gui_draw(Texture2D* textures, Shader2D*& shader)
 {
 
     ImGui_ImplOpenGL3_NewFrame();
+#if defined __EMSCRIPTEN__ || defined SDL_BACKEND
+    ImGui_ImplSDL2_NewFrame(*pwindow);
+#else
     ImGui_ImplGlfw_NewFrame();
+#endif
     ImGui::NewFrame();	
+
 
     // TODO: del ShowDemoWindow
     ImGui::PushFont(pfont_aldrich);
     //ImGui::ShowDemoWindow();
     
-
     
     ImGui::Begin("SHADER_EDITOR", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus);// | ImGuiWindowFlags_DockNodeHost
     ImGui::SetWindowPos("SHADER_EDITOR", ImVec2{0, 0});
@@ -118,8 +139,9 @@ void gui_draw(Texture2D* textures, Shader2D*& shader)
     }
     
     ImGui::PopFont();
+/*
+*/
 
-	
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -130,8 +152,14 @@ void gui_destroy()
     {
         editors[i].shutdown();
     }
+
+
     ImGui_ImplOpenGL3_Shutdown();
+#if defined __EMSCRIPTEN__ || defined SDL_BACKEND
+    ImGui_ImplSDL2_Shutdown();
+#else
 	ImGui_ImplGlfw_Shutdown();
+#endif
 	ImNodes::DestroyContext();
 	ImGui::DestroyContext();
 }

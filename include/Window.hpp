@@ -4,6 +4,10 @@
 #include <string>
 
 struct GLFWwindow;
+#if defined __EMSCRIPTEN__ || defined SDL_BACKEND
+#include <SDL.h>
+#endif
+
 namespace ymath
 {
     template <size_t _D, typename _Type>
@@ -22,10 +26,17 @@ namespace yt2d
         ~Window();
     
     public:
+#if defined __EMSCRIPTEN__ || defined SDL_BACKEND
+        operator SDL_Window*()
+        {
+            return m_sdl_window;
+        }
+#else
         operator GLFWwindow*()
         {
             return m_window;
         }
+#endif
 
         void pollEvent(void);
         void waitEvent(void);
@@ -41,10 +52,23 @@ namespace yt2d
         YT2D_NODISCARD YT2D_STATUS Init();
 
     private:
-        GLFWwindow* m_window;
         u32 m_width;
         u32 m_height;
         std::string m_title;
+
+#if defined __EMSCRIPTEN__ || defined SDL_BACKEND
+    private:
+        SDL_Window* m_sdl_window;
+        SDL_Event m_sdl_event;
+        SDL_Renderer* m_sdl_renderer;
+        SDL_GLContext m_sdl_gl_context;
+        bool m_sdl_is_close = false;
+    public:
+        SDL_GLContext getSDLGLContext() { return m_sdl_gl_context; }
+#else
+    private:
+        GLFWwindow* m_window;
+#endif
 
     };
 }
