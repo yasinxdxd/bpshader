@@ -4,8 +4,27 @@
 //typedefs
 typedef unsigned int glshader_t;
 
-
 /*--------------------global default variables--------------------*/
+
+#if defined __EMSCRIPTEN__ || defined SDL_BACKEND
+const char* _SHADER2D_DEFAULT_VERTEX_SHADER_CODE_TEXT = 
+R"V0G0N(#version 300 es
+in vec4 i_position;
+in vec3 i_color;
+in vec2 i_uv;
+
+out vec3 o_vertex_color; // specify a color output to the fragment shader
+out vec2 o_vertex_uv; // specify a color output to the fragment shader
+
+void main(void) {
+    gl_Position = vec4(i_position.xyz, 1.0);
+
+    o_vertex_color = i_color;
+    o_vertex_uv = i_uv;
+}
+)V0G0N";
+
+#else 
 
 const char* _SHADER2D_DEFAULT_VERTEX_SHADER_CODE_TEXT = 
 R"V0G0N(
@@ -27,6 +46,8 @@ void main()
     o_vertex_uv = i_uv;
 }
 )V0G0N";
+
+#endif
 
 glshader_t _SHADER2D_DEFAULT_GL_VERTEX_SHADER;
 
