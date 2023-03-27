@@ -16,7 +16,7 @@ using namespace std::chrono;
 #undef main
 #endif
 
-#if defined __EMSCRIPTEN__ || defined SDL_BACKEND
+#if defined __EMSCRIPTEN__
 // it is almost a neccesaty to create a context to pass all neccesary variables we create in main to the emscripten_main_loop
 // to use lambda functions a kind of shit when you need to pass a c func-pointer...
 yt2d::Window* window;
@@ -96,7 +96,7 @@ int main()
 #elif defined SDL_BACKEND
     while(!window->isClose())
     {
-        main_loop();
+        main_loop(NULL);
     }
 #endif
 
