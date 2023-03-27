@@ -22,13 +22,12 @@ using namespace std::chrono;
 yt2d::Window* window;
 RenderTexture2D* test_render_texture;
 Shader2D* screen_shader;
-//Quad quad;
-//Quad tr;
+Quad* quad;
+Quad* tr;
 float ms = 0;
 
 void main_loop(void *arg)//void *arg
 {
-    std::cout << "main_loop" << std::endl;
     window->pollEvent();
     
     /*
@@ -44,7 +43,7 @@ void main_loop(void *arg)//void *arg
         window->clear();
         //TODO: Render shader via a projection matrix to get a proper result from the scaling of vertices according to window size...
         // FIXME: there is smthng wrong with shaders!!!
-        //tr.render(screen_shader);
+        tr->render(screen_shader);
     test_render_texture->unbind();
     
     
@@ -60,8 +59,7 @@ void main_loop(void *arg)//void *arg
     window->display();
     /*
     */
-    
-    std::cout << "Hello!" << std::endl;
+
 }
 
 int main()
@@ -79,15 +77,16 @@ int main()
 
 
     // FIXME: there is smthng wrong with shaders!!!
-    /*
     glcompiler::init();
     Shader2D* screen_shader = new Shader2D();
 
+    tr = new Quad();
 
     screen_shader->load_shader_code("../../shaders/notexture_frag.glsl", Shader2D::ShaderCodeType::FRAGMENT_SHADER);
 
     
     glcompiler::compile_and_attach_shaders(screen_shader);
+    /*
     */
     
 
@@ -102,7 +101,8 @@ int main()
 #endif
 
     gui_destroy();
-    //delete test_render_texture;
+    delete test_render_texture;
+    delete tr;
     /*
     */
 
