@@ -10,12 +10,6 @@
 #include <defs.hh>
 #include <node_to_glsl_interpreter.hpp>
 
-#define IM_VEC2_CLASS_EXTRA \
-ImVec2 ImVec2::operator+(ImVec2 right)\
-{\
-    return ImVec2(this->x + right.x, this->y + right.y);\
-}
-
 const auto global_map_func = [] (int value, int min1, int max1, int min2, int max2) -> float
 {
     return min2 + (value - min1) * (float)(max2 - min2) / (float)(max1 - min1);
@@ -31,6 +25,7 @@ int my_round(float num)
     return int_num;
 }
 
+#include <imconfig.h>
 #include <imgui.h>
 #include <imnodes.h>
 #include <imgui_internal.h>
@@ -1110,7 +1105,7 @@ void node_editor::EditorManager::show_shader_screen(Editor& editor, Texture2D*& 
         ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".glsl,.vert,.frag", "../..");
     
     ImGui::SameLine();
-    ImGui::Text(file_path_name.c_str());
+    ImGui::Text("%s", file_path_name.c_str());
 
     if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) 
     {

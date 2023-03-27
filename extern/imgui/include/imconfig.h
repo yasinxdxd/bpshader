@@ -118,3 +118,8 @@ namespace ImGui
     void MyFunction(const char* name, const MyMatrix44& v);
 }
 */
+#define IM_VEC2_CLASS_EXTRA \
+ImVec2 operator+(ImVec2 right)\
+{\
+    return ImVec2(this->x + right.x, this->y + right.y);\
+}
