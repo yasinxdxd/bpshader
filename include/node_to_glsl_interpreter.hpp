@@ -67,7 +67,22 @@ void generate_glsl(std::vector<std::string> rgba)
    std::string comma(",");
    std::string res = "result_frag_color = vec4(" + rgba.at(0) + comma + rgba.at(1) + comma + rgba.at(2) + comma + rgba.at(3) + std::string(");");
 
-   std::string glsl = R"V0G0N(
+   std::string glsl = 
+#ifdef __EMSCRIPTEN__
+   R"V0G0N(#version 300 es
+    precision mediump float;
+    
+    out vec4 result_frag_color;
+    in vec3 o_vertex_color;
+    in vec2 o_vertex_uv;
+
+    void main()
+    {
+        
+    }
+)V0G0N";
+#else
+   R"V0G0N(
     #version 430 core
 
     out vec4 result_frag_color;
@@ -79,8 +94,10 @@ void generate_glsl(std::vector<std::string> rgba)
         
     }
 )V0G0N";
+#endif
 
-    glsl.insert(140, res.c_str());
+    std::cout << glsl.size() << std::endl;
+    glsl.insert(glsl.size() - 6, res.c_str());
     std::cout << glsl << std::endl;
 
     std::fstream file("generated_fragemnt_shader.glsl", std::ofstream::out | std::ofstream::trunc);
