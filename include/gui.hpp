@@ -100,6 +100,10 @@ void gui_start(yt2d::Window& window)
     INIT_STYLE
     editors.resize(1);
     editors[0].initialize("Node Editor");
+
+#ifdef __EMSCRIPTEN__
+    ImGui::LoadIniSettingsFromDisk("../res/imgui.ini");
+#endif
 }
 
 void gui_draw(Texture2D* textures, Shader2D*& shader)
