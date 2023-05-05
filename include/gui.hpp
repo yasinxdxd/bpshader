@@ -147,7 +147,7 @@ void gui_draw(Texture2D* textures, Shader2D*& shader)
     ImGui::PopFont();
 
 	ImGui::Render();
-    ImGui::EndFrame();
+    //ImGui::EndFrame();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
