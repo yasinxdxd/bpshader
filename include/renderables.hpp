@@ -10,7 +10,7 @@ struct Quad
     Quad();
     ~Quad();
 
-    void render(Shader2D* shader);
+    operator unsigned int&() { return m_gl_VAO; }
 
 private:
     float m_vertices[48] = {
@@ -38,7 +38,7 @@ struct Triangle
     Triangle();
     ~Triangle();
 
-    void render(Shader2D* shader);
+    operator unsigned int&() { return m_gl_VAO; }
 
 private:
     float m_vertices[36] = {
@@ -53,6 +53,15 @@ private:
 };
 #endif//SHAPE_TRIANGLE
 
+// TODO: do something about mesh class and quads and triangles...
+
+void render(unsigned int& vertex_array_object, unsigned int vertex_size, Shader2D* shader);
+
+
+struct Mesh
+{
+
+};
 
 
 #endif//RENDERABLES_HPP

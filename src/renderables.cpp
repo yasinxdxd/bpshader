@@ -37,14 +37,6 @@ Quad::~Quad()
     glDeleteVertexArrays(1, &m_gl_VAO);
 }
 
-void Quad::render(Shader2D* shader)
-{
-    glUseProgram(*shader);
-    glBindVertexArray(m_gl_VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindVertexArray(0);//be sure that binded VAO is not changed by outside.
-}
-
 Triangle::Triangle()
 {
     //vertex buffer object
@@ -78,10 +70,10 @@ Triangle::~Triangle()
     glDeleteVertexArrays(1, &m_gl_VAO);
 }
 
-void Triangle::render(Shader2D* shader)
+void render(unsigned int& vertex_array_object, unsigned int vertex_size, Shader2D* shader)
 {
     glUseProgram(*shader);
-    glBindVertexArray(m_gl_VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glBindVertexArray(vertex_array_object);
+    glDrawArrays(GL_TRIANGLES, 0, vertex_size);
     glBindVertexArray(0);//be sure that binded VAO is not changed by outside.
 }

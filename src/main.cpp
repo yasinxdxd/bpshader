@@ -42,8 +42,8 @@ void main_loop(void *arg)//void *arg
     test_render_texture->bind();
         window->clear();
         //TODO: Render shader via a projection matrix to get a proper result from the scaling of vertices according to window size...
-        // FIXME: there is smthng wrong with shaders!!!
-        tr->render(screen_shader);
+
+        render(*tr, 6, screen_shader);
     test_render_texture->unbind();
     
     
@@ -167,7 +167,7 @@ int main()
             test_render_texture.bind();
                 window.clear();
                 //TODO: Render shader via a projection matrix to get a proper result from the scaling of vertices according to window size...
-                tr.render(screen_shader);
+                render(tr, 6, screen_shader);
             test_render_texture.unbind();
                 
             
