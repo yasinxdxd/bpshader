@@ -13,6 +13,8 @@ include_directories(
     ${EXTERN_DIR}/imguifiledialog/include
     ${EXTERN_DIR}/stb_image
     ${EXTERN_DIR}/mini
+    ${EXTERN_DIR}/tinygltfloader/include
+    ${EXTERN_DIR}/OBJ_Loader/include
                     "include")
 
 if(BACKEND MATCHES SDL)
