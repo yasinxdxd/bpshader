@@ -1,4 +1,4 @@
-#include <shader2d.hpp>
+#include <shader.hpp>
 #define SHAPE_QUAD
 #define SHAPE_TRIANGLE
 #include <renderables.hpp>
@@ -21,7 +21,7 @@ using namespace std::chrono;
 // to use lambda functions a kind of shit when you need to pass a c func-pointer...
 yt2d::Window* window;
 RenderTexture2D* test_render_texture;
-Shader2D* screen_shader;
+Shader* screen_shader;
 Quad* quad;
 Quad* tr;
 float ms = 0;
@@ -78,11 +78,11 @@ int main()
 
     // FIXME: there is smthng wrong with shaders!!!
     glcompiler::init();
-    Shader2D* screen_shader = new Shader2D();
+    Shader* screen_shader = new Shader();
 
     tr = new Quad();
 
-    screen_shader->load_shader_code("../../shaders/notexture_frag.glsl", Shader2D::ShaderCodeType::FRAGMENT_SHADER);
+    screen_shader->load_shader_code("../../shaders/notexture_frag.glsl", Shader::ShaderCodeType::FRAGMENT_SHADER);
 
     
     glcompiler::compile_and_attach_shaders(screen_shader);
@@ -124,12 +124,12 @@ int main()
     
     glcompiler::init();
     
-    Shader2D* screen_shader = new Shader2D();
+    Shader* screen_shader = new Shader();
 
     Quad quad;
     Quad tr;
 
-    screen_shader->load_shader_code("../../shaders/notexture_frag.glsl", Shader2D::ShaderCodeType::FRAGMENT_SHADER);
+    screen_shader->load_shader_code("../../shaders/notexture_frag.glsl", Shader::ShaderCodeType::FRAGMENT_SHADER);
     
     ImGui::GetMousePos();
     
@@ -139,8 +139,8 @@ int main()
     
     
     /*
-    screen_shader = new Shader2D();
-    screen_shader->load_shader_code("../../shaders/notexture_frag.glsl", Shader2D::ShaderCodeType::FRAGMENT_SHADER);
+    screen_shader = new Shader();
+    screen_shader->load_shader_code("../../shaders/notexture_frag.glsl", Shader::ShaderCodeType::FRAGMENT_SHADER);
     glcompiler::compile_and_attach_shaders(screen_shader);*/
     
 

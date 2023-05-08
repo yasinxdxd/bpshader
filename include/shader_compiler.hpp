@@ -1,7 +1,7 @@
 #ifndef SHADER_COMPILER_HPP
 #define SHADER_COMPILER_HPP
 
-class Shader2D;
+class Shader;
 
 #include <defs.hh>
 
@@ -18,7 +18,7 @@ namespace glcompiler
 
     void init();
     
-    _NORETURN_ void compile_and_attach_shaders(Shader2D* shader);
+    _NORETURN_ void compile_and_attach_shaders(Shader* shader);
     //FIXME: it will save shader binary into a file.
     _NORETURN_ void save_shader_binary();
 

@@ -7,7 +7,7 @@
 struct ImVec2;
 struct ImNodesEditorContext;
 class Texture2D;
-class Shader2D;
+class Shader;
 
 
 #define NODE_OPERATOR Node
@@ -193,7 +193,7 @@ namespace node_editor
         static inline int item_current_idx = 0; // Here we store our selection data as an index.
         static inline std::string file_path_name = "../../shaders/notexture_frag.glsl";
         static void show_node_list();
-        static void show_shader_screen(Editor& editor, Texture2D*& texture, Shader2D*& shader);
+        static void show_shader_screen(Editor& editor, Texture2D*& texture, Shader*& shader);
         static void show_shortcuts();
     };
 

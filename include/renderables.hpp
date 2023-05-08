@@ -1,9 +1,11 @@
 #ifndef RENDERABLES_HPP
 #define RENDERABLES_HPP
 
+//#include <ve
+
 #ifdef SHAPE_QUAD
 
-class Shader2D;
+class Shader;
 
 struct Quad
 {
@@ -55,12 +57,23 @@ private:
 
 // TODO: do something about mesh class and quads and triangles...
 
-void render(unsigned int& vertex_array_object, unsigned int vertex_size, Shader2D* shader);
+void render(unsigned int& vertex_array_object, unsigned int vertex_size, Shader* shader);
 
 
-struct Mesh
+struct MeshStatic
 {
+    MeshStatic();
+    ~MeshStatic();
 
+    operator unsigned int&() { return m_gl_VAO; }
+
+    void load_mesh(const char* path);
+
+private:
+    float* m_vertices;
+
+    unsigned int m_gl_VBO;//vertex buffer object
+    unsigned int m_gl_VAO;//vertex array object
 };
 
 

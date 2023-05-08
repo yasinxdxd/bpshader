@@ -106,7 +106,7 @@ void gui_start(yt2d::Window& window)
 #endif
 }
 
-void gui_draw(Texture2D* textures, Shader2D*& shader)
+void gui_draw(Texture2D* textures, Shader*& shader)
 {
 
     ImGui_ImplOpenGL3_NewFrame();

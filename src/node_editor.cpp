@@ -5,7 +5,7 @@
 #include <sstream>
 #include <ini.h>
 #include <texture2d.hpp>
-#include <shader2d.hpp>
+#include <shader.hpp>
 #include <iostream>
 #include <defs.hh>
 #include <node_to_glsl_interpreter.hpp>
@@ -1096,7 +1096,7 @@ void node_editor::EditorManager::show_node_list()
     ImGui::EndChild();
 }
 
-void node_editor::EditorManager::show_shader_screen(Editor& editor, Texture2D*& texture, Shader2D*& shader)
+void node_editor::EditorManager::show_shader_screen(Editor& editor, Texture2D*& texture, Shader*& shader)
 {
     ImGui::BeginChild(2, ImVec2{820, 800}, true);
     ImGui::Image(*texture, {800, 600}, {-1, 1}, {0, 0});
@@ -1127,7 +1127,7 @@ void node_editor::EditorManager::show_shader_screen(Editor& editor, Texture2D*& 
     {
         delete shader;
         glcompiler::init();
-        shader = new Shader2D();
+        shader = new Shader();
         //shader->load_shader_code("../../shaders/test_vert.glsl", Shader2D::ShaderCodeType::VERTEX_SHADER);
         shader->load_shader_code(file_path_name.c_str());
         glcompiler::compile_and_attach_shaders(shader);

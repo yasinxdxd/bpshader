@@ -26,7 +26,7 @@ void main(void) {
 
 #else 
 
-const char* _SHADER2D_DEFAULT_VERTEX_SHADER_CODE_TEXT = 
+const char* _SHADER_DEFAULT_VERTEX_SHADER_CODE_TEXT = 
 R"V0G0N(
 #version 430 core
 layout (location = 0) in vec3 i_position; // the position variable has attribute position 0
@@ -49,7 +49,7 @@ void main()
 
 #endif
 
-glshader_t _SHADER2D_DEFAULT_GL_VERTEX_SHADER;
+glshader_t _SHADER_DEFAULT_GL_VERTEX_SHADER;
 
 /*--------------------global default variables--------------------*/
 
