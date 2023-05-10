@@ -57,7 +57,9 @@ private:
 
 // TODO: do something about mesh class and quads and triangles...
 
-void render(unsigned int& vertex_array_object, unsigned int vertex_size, Shader* shader);
+
+typedef void (*shader_function)(Shader*);
+void render(unsigned int& vertex_array_object, unsigned int vertex_size, Shader* shader, shader_function func);
 
 
 struct MeshStatic

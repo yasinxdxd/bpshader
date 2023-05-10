@@ -14,6 +14,7 @@
 #include <texture2d.hpp>
 #include <Window.hpp>
 #include <node_editor.hpp>
+#include <3drenderer_editor.hpp>
 //#include <shader_compiler.hpp>
 //#include <shader2d.hpp>
 #include <iostream>
@@ -106,7 +107,7 @@ void gui_start(yt2d::Window& window)
 #endif
 }
 
-void gui_draw(Texture2D* textures, Shader*& shader)
+void gui_draw(std::vector<Texture2D*> textures, Shader*& shader)
 {
 
     ImGui_ImplOpenGL3_NewFrame();
@@ -121,17 +122,16 @@ void gui_draw(Texture2D* textures, Shader*& shader)
     // TODO: del ShowDemoWindow
     ImGui::PushFont(pfont_aldrich);
     //ImGui::ShowDemoWindow();
+    
+    
 /*
-*/
-    
-    
     ImGui::Begin("SHADER_EDITOR", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus);// | ImGuiWindowFlags_DockNodeHost
     ImGui::SetWindowPos("SHADER_EDITOR", ImVec2{0, 0});
     ImGui::SetWindowSize("SHADER_EDITOR", ImVec2{(float)pwindow->getWindowWidth(), (float)pwindow->getWindowHeight()});   
 
         node_editor::EditorManager::show_node_list();
         ImGui::SameLine(320.0f);
-        node_editor::EditorManager::show_shader_screen(editors[0], textures, shader);
+        node_editor::EditorManager::show_shader_screen(editors[0], textures[0], shader);
         node_editor::EditorManager::show_shortcuts();
         
     ImGui::End();
@@ -144,7 +144,10 @@ void gui_draw(Texture2D* textures, Shader*& shader)
         editors[i].show_editor();
     }
     
+*/
     ImGui::PopFont();
+
+    renderer_editor::show(textures[1]);
 
 	ImGui::Render();
     //ImGui::EndFrame();

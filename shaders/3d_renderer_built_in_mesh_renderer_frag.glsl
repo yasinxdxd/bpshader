@@ -7,7 +7,7 @@ in vec3 o_vertex_normal;
 
 uniform float time;
 
-int main()
+void main()
 {
-    result_frag_color = vec4(1.0, 1.0, 1.0, 1.0);
+    result_frag_color = vec4(1.0, .5, 0.7, 1.0);
 }
