@@ -5,8 +5,6 @@
 #include <defs.hh>
 #include <glad/glad.h>
 #include <stdarg.h>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 //extern inline glshader_t _shader_DEFAULT_GL_VERTEX_SHADER;
 
