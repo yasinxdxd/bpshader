@@ -5,6 +5,8 @@
 #include <defs.hh>
 #include <glad/glad.h>
 #include <stdarg.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 //extern inline glshader_t _shader_DEFAULT_GL_VERTEX_SHADER;
 
@@ -129,34 +131,28 @@ _NORETURN_ void Shader::set<double>(std::string name, double value) const
 }
 
 template <>
-_NORETURN_ void Shader::set<int, 2>(std::string name, int value) const
+_NORETURN_ void Shader::set<int, 2>(std::string name, int value1, int value2) const
 {
-    int values[2];
-
     glUseProgram(m_gl_shader_program_id);
 
     glUniform2i(
         glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
-        values[0], values[1]);
+        value1, value2);
 }
 
 template <>
-_NORETURN_ void Shader::set<unsigned int, 2>(std::string name, unsigned int value) const
+_NORETURN_ void Shader::set<unsigned int, 2>(std::string name, unsigned int value1, unsigned int value2) const
 {
-    unsigned int values[2];
-
     glUseProgram(m_gl_shader_program_id);
 
     glUniform2ui(
         glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
-        values[0], values[1]);
+        value1, value2);
 }
 
 template <>
 _NORETURN_ void Shader::set<float, 2>(std::string name, float value1, float value2) const
 {
-    float values[2];
-
     glUseProgram(m_gl_shader_program_id);
 
     glUniform2f(
@@ -165,13 +161,130 @@ _NORETURN_ void Shader::set<float, 2>(std::string name, float value1, float valu
 }
 
 template <>
-_NORETURN_ void Shader::set<double, 2>(std::string name, double value) const
+_NORETURN_ void Shader::set<double, 2>(std::string name, double value1, double value2) const
 {
-    double values[2];
-    
     glUseProgram(m_gl_shader_program_id);
 
     glUniform2d(
         glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
-        values[0], values[1]);
+        value1, value2);
 }
+
+template <>
+_NORETURN_ void Shader::set<int, 3>(std::string name, int value1, int value2, int value3) const
+{
+    glUseProgram(m_gl_shader_program_id);
+
+    glUniform3i(
+        glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
+        value1, value2, value3);
+}
+
+template <>
+_NORETURN_ void Shader::set<unsigned int, 3>(std::string name, unsigned int value1, unsigned int value2, unsigned int value3) const
+{
+    glUseProgram(m_gl_shader_program_id);
+
+    glUniform3ui(
+        glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
+        value1, value2, value3);
+}
+
+template <>
+_NORETURN_ void Shader::set<float, 3>(std::string name, float value1, float value2, float value3) const
+{
+    glUseProgram(m_gl_shader_program_id);
+
+    glUniform3f(
+        glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
+        value1, value2, value3);
+}
+
+template <>
+_NORETURN_ void Shader::set<double, 3>(std::string name, double value1, double value2, double value3) const
+{
+    glUseProgram(m_gl_shader_program_id);
+
+    glUniform3d(
+        glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
+        value1, value2, value3);
+}
+
+template <>
+_NORETURN_ void Shader::set<int, 4>(std::string name, int value1, int value2, int value3, int value4) const
+{
+    glUseProgram(m_gl_shader_program_id);
+
+    glUniform4i(
+        glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
+        value1, value2, value3, value4);
+}
+
+template <>
+_NORETURN_ void Shader::set<unsigned int, 4>(std::string name, unsigned int value1, unsigned int value2, unsigned int value3, unsigned int value4) const
+{
+    glUseProgram(m_gl_shader_program_id);
+
+    glUniform4ui(
+        glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
+        value1, value2, value3, value4);
+}
+
+template <>
+_NORETURN_ void Shader::set<float, 4>(std::string name, float value1, float value2, float value3, float value4) const
+{
+    glUseProgram(m_gl_shader_program_id);
+
+    glUniform4f(
+        glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
+        value1, value2, value3, value4);
+}
+
+template <>
+_NORETURN_ void Shader::set<double, 4>(std::string name, double value1, double value2, double value3, double value4) const
+{
+    glUseProgram(m_gl_shader_program_id);
+
+    glUniform4d(
+        glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
+        value1, value2, value3, value4);
+}
+
+template <>
+_NORETURN_ void Shader::set_matrix<2>(std::string name, glm::mat2x2 value) const
+{
+    glUseProgram(m_gl_shader_program_id);
+
+    glUniformMatrix2fv(
+        glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
+        1, GL_FALSE, glm::value_ptr(value));
+}
+
+template <>
+_NORETURN_ void Shader::set_matrix<3>(std::string name, glm::mat3x3 value) const
+{
+    glUseProgram(m_gl_shader_program_id);
+
+    glUniformMatrix3fv(
+        glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
+        1, GL_FALSE, glm::value_ptr(value));
+}
+
+template <>
+_NORETURN_ void Shader::set_matrix<4>(std::string name, glm::mat4x4 value) const
+{
+    glUseProgram(m_gl_shader_program_id);
+
+    glUniformMatrix4fv(
+        glGetUniformLocation(m_gl_shader_program_id, name.c_str()),
+        1, GL_FALSE, glm::value_ptr(value));
+}
+
+/*
+    glUniformMatrix2dv
+    glUniformMatrix2fv
+    glUniformMatrix3dv
+    glUniformMatrix3fv
+    glUniformMatrix4dv
+    glUniformMatrix4fv
+*/

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <shader_compiler.hpp>
+#include <glm/glm.hpp>
 
 class Shader
 {
@@ -27,6 +28,16 @@ public:
     _NORETURN_ void set(std::string name, T value) const;
     template <typename T, size_t _D = 2>
     _NORETURN_ void set(std::string name, T value1, T value2) const;
+    template <typename T, size_t _D = 3>
+    _NORETURN_ void set(std::string name, T value1, T value2, T value3) const;
+    template <typename T, size_t _D = 4>
+    _NORETURN_ void set(std::string name, T value1, T value2, T value3, T value4) const;
+    template <size_t _D = 2>
+    _NORETURN_ void set_matrix(std::string name, glm::mat2x2 value) const;
+    template <size_t _D = 3>
+    _NORETURN_ void set_matrix(std::string name, glm::mat3x3 value) const;
+    template <size_t _D = 4>
+    _NORETURN_ void set_matrix(std::string name, glm::mat4x4 value) const;
 
     operator unsigned int();
 
