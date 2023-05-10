@@ -15,6 +15,7 @@ include_directories(
     ${EXTERN_DIR}/mini
     ${EXTERN_DIR}/tinygltfloader/include
     ${EXTERN_DIR}/OBJ_Loader/include
+    ${EXTERN_DIR}/glm
                     "include")
 
 if(BACKEND MATCHES SDL)
