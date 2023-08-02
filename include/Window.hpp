@@ -76,6 +76,8 @@ namespace yt2d
 namespace _priv::callbacks
 {
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+    static void glfw_error_callback(int error, const char* description);
+    static void __stdcall gl_debug_callback(unsigned int source, unsigned int type, unsigned int id, unsigned int severity, int length, const char* message, const void* userParam);
 }
 
 #endif//YT2D_WINDOW_HPP

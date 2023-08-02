@@ -59,7 +59,7 @@ private:
 
 
 typedef void (*shader_function)(Shader*);
-void render(unsigned int& vertex_array_object, unsigned int vertex_size, Shader* shader, shader_function func);
+void render(unsigned int& vertex_array_object, unsigned int size, Shader* shader, shader_function func, bool use_ebo = false);
 
 
 struct MeshStatic
@@ -71,10 +71,12 @@ struct MeshStatic
 
     void load_mesh(const char* path);
 
-private:
+//private:
     float* m_vertices;
+    unsigned int* m_indices;
 
     unsigned int m_gl_VBO;//vertex buffer object
+    unsigned int m_gl_EBO;//index buffer object
     unsigned int m_gl_VAO;//vertex array object
 };
 

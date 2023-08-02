@@ -93,6 +93,11 @@ _NORETURN_ void glcompiler::compile_and_attach_shaders(Shader* shader)
     delete shader->m_shader_vertex_code_text;
     shader->m_shader_fragment_code_text = nullptr;
     shader->m_shader_vertex_code_text = nullptr;
+
+    GLenum error;
+    while ((error = glGetError()) != GL_NO_ERROR) {
+        std::cout << "shader compile/link error: " << error << std::endl;
+    }
 }
 
 _NORETURN_ void glcompiler::_priv::compile_default_vetex_shader()
@@ -117,7 +122,10 @@ _NORETURN_ void glcompiler::_priv::compile_default_vetex_shader()
     else
         memset(compiler_info.compile_log_info, 0, 512);
         
-    
+    GLenum error;
+    while ((error = glGetError()) != GL_NO_ERROR) {
+        std::cout << "default vertex shader compile error: " << error << std::endl;
+    }
 }
 
 _NORETURN_ void glcompiler::save_shader_binary()

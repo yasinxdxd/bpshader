@@ -132,7 +132,7 @@ int main()
 
 
     MeshStatic cube;
-    cube.load_mesh("../../res/3d/box_stack.obj");
+    cube.load_mesh("../../res/3d/cube.obj");
     
     Shader* renderer3d_shader = new Shader("../../shaders/3d_renderer_built_in_mesh_renderer_vert.glsl", Shader::ShaderCodeType::VERTEX_SHADER);
     renderer3d_shader->load_shader_code("../../shaders/3d_renderer_built_in_mesh_renderer_frag.glsl", Shader::ShaderCodeType::FRAGMENT_SHADER);
@@ -196,12 +196,13 @@ int main()
             renderer3d_render_texture.bind();
                 window.clear();
                 
-                render(cube, 6, renderer3d_shader, [](Shader* shader) -> void 
+                render(cube, 36, renderer3d_shader, [](Shader* shader) -> void 
                 {
                     static float a = 0.1; 
                     glm::mat4 view = glm::lookAt(glm::vec3(0.f, 0.f, 2.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f));
                     glm::mat4 proj = glm::perspective<float>(60.f, 8.f/6.f, 0.01, 100.f);
                     glm::mat4 model = glm::mat4(1.0f);
+                    model = glm::translate(model, glm::vec3(0.0, 0.0, -1.0));
                     model = glm::rotate(model, a, glm::vec3(0.0, 1.0, 0.0));
 
                     std::cout << "shader func" << std::endl;
@@ -212,7 +213,7 @@ int main()
 
                     a += 0.01;
 
-                });
+                }, false);
             renderer3d_render_texture.unbind();
                 
             

@@ -187,6 +187,7 @@ YT2D_NODISCARD YT2D_STATUS yt2d::Window::Init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    //glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_FALSE);// Disable Debug Context for now?!
 
     //create the window
     m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), NULL, NULL);
@@ -201,12 +202,33 @@ YT2D_NODISCARD YT2D_STATUS yt2d::Window::Init()
     glfwMakeContextCurrent(m_window);
 
     glfwSetFramebufferSizeCallback(m_window, _priv::callbacks::framebuffer_size_callback);
+    glfwSetErrorCallback(_priv::callbacks::glfw_error_callback);
     
     //GLAD Library Init
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         return YT2D_STATUS_ERROR;
     }
+    // Add this function to handle OpenGL debug messages
+    
+    GLenum error;
+    while ((error = glGetError()) != GL_NO_ERROR) {
+        std::cout << "gl init error: " << error << std::endl;
+    }
+
+    // shitty way to check extension it just gives GL_INVALID_ENUM no more!!!
+    // const GLubyte* extensions = glGetString(GL_EXTENSIONS);
+    // if (extensions && strstr(reinterpret_cast<const char*>(extensions), "GL_ARB_debug_output"))
+    // {
+    //     // Enable the debug output
+    //     glEnable(GL_DEBUG_OUTPUT);
+    //     glDebugMessageCallback(_priv::callbacks::gl_debug_callback, nullptr);
+    // }
+    // else
+    // {
+    //     // The extension is not supported; handle this case accordingly
+    //     std::cout << "no extension" << std::endl;
+    // }
 #endif
 
 
@@ -220,6 +242,15 @@ void _priv::callbacks::framebuffer_size_callback(GLFWwindow *window, int width, 
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+void _priv::callbacks::glfw_error_callback(int error, const char* description)
+{
+    fprintf(stderr, "GLFW Error (%d): %s\n", error, description);
+}
+
+void GLAPIENTRY _priv::callbacks::gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+    std::cerr << "OpenGL Debug Message: " << message << std::endl;
 }
 
 u32 yt2d::Window::getWindowWidth()

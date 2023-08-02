@@ -5,7 +5,8 @@ out vec4 result_frag_color;
 in vec2 o_vertex_uv;
 in vec3 o_vertex_normal;
 
-uniform float time;
+uniform float utime;
+uniform vec4 ucolor;
 
 void main()
 {
